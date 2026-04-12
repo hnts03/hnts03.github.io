@@ -1,0 +1,30 @@
+{% if page.translation-url %}
+<div class="lang-switch">
+  {% if page.lang == 'en' %}
+    <span class="lang-current">🇺🇸 English</span>
+    <span class="lang-divider">|</span>
+    <a class="lang-link" href="{{ page.translation-url | relative_url }}">🇰🇷 한국어</a>
+  {% else %}
+    <span class="lang-current">🇰🇷 한국어</span>
+    <span class="lang-divider">|</span>
+    <a class="lang-link" href="{{ page.translation-url | relative_url }}">🇺🇸 English</a>
+  {% endif %}
+</div>
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    background-color: #f8f8f8;
+  }
+  .lang-current { font-weight: 600; }
+  .lang-divider { color: #bbb; }
+  .lang-link { text-decoration: none; color: #008AFF; }
+  .lang-link:hover { text-decoration: underline; }
+</style>
+{% endif %}
