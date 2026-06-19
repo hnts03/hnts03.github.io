@@ -78,6 +78,20 @@ assets/
 
 네비게이션(`navbar-links`)은 `_config.yml`에서 직접 편집. 현재 카테고리: Computer Architecture / GPU Architecture / RTL / C·C++ / Python / CUDA / ROCm / Metal / SYCL / AI / Simulation / Project.
 
+## Vault 연동
+
+`vault/` — Research vault(`/Users/hanets/workspace/my-github-repos/Research/`)의 심볼릭 링크. `.gitignore`에 등록되어 블로그 repo에는 추적되지 않음.
+
+**워크플로우**: 포스트 작성 후 해당 주제의 지식을 `vault/post/<카테고리>/` 에 문서화.
+
+```
+vault/post/
+├── gpu-architecture/   # GPU 아키텍처 시리즈 관련 지식
+└── llm-serving/        # LLM 서빙 프레임워크 관련 지식
+```
+
+새 카테고리가 생기면 `vault/post/` 아래 디렉토리를 추가하고 `vault/post/README.md` 목록도 업데이트.
+
 ## 배포
 
 `master` 브랜치에 push하면 GitHub Actions (`ci.yml`)가 자동으로 빌드·배포.
