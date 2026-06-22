@@ -15,3 +15,8 @@
 - **source_type**: generated
 - **spec**: /tmp/vllm-pp.json
 - **license**: original (no restrictions)
+
+## arch-overview.png
+- **source_type**: generated
+- **spec**: scripts/specs/vllm-arch-v1.json
+- **license**: original (no restrictions)

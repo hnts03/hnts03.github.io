@@ -1,0 +1,32 @@
+{
+  "title": "vLLM V1 Architecture",
+  "groups": [
+    {
+      "label": "API Process",
+      "color": "blue",
+      "items": [
+        {"label": "API Server", "sub": "FastAPI / OpenAI compat"},
+        {"label": "AsyncLLM", "sub": "tokenizer · detokenizer"},
+        {"label": "EngineCoreClient", "sub": "ZMQ socket"}
+      ]
+    },
+    {
+      "label": "EngineCore Process",
+      "color": "green",
+      "items": [
+        {"label": "EngineCore", "sub": "busy loop"},
+        {"label": "Scheduler", "sub": "waiting / running queues"},
+        {"label": "KVCacheManager", "sub": "block alloc · prefix cache"}
+      ]
+    },
+    {
+      "label": "GPUWorker × N",
+      "color": "orange",
+      "items": [
+        {"label": "GPUWorker", "sub": "one per GPU rank"},
+        {"label": "GPUModelRunner", "sub": "forward pass · CUDA Graph"},
+        {"label": "KV Cache Tensors", "sub": "bind_kv_cache()"}
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "LLM 서빙 프레임워크 #1: vLLM 심층 분석"
-subtitle: "Frontend·Scheduler·Executor·Worker 구조와 병렬화 전략"
+subtitle: "다중 프로세스 아키텍처, Scheduler, KVCacheManager, 병렬화 전략 (V1 기준)"
 tags: [LLM, Inference, vLLM, PagedAttention, GPU, AI, Parallelism]
 lang: kr
 translation-url: /2026-06-22-llm-serving-1-vllm-en/
@@ -18,7 +18,7 @@ mathjax: false
 | 2 | SGLang 심층 분석 | |
 | 3 | TensorRT-LLM 심층 분석 | |
 
-[개요 포스트](/2026-06-19-llm-serving-overview-kr/)에서 PagedAttention과 Continuous Batching의 개념을 다뤘습니다. 이번 글에서는 vLLM 내부 구조 — Frontend, Scheduler, Executor, Worker — 와 병렬화 전략을 다룹니다.
+[개요 포스트](/2026-06-19-llm-serving-overview-kr/)에서 PagedAttention과 Continuous Batching의 개념을 다뤘습니다. 이번 글에서는 vLLM V1(v0.8.0 이후 default) 내부 구조와 병렬화 전략을 다룹니다.
 
 ---
 
@@ -36,25 +36,27 @@ mathjax: false
 
 ## 2. 전체 아키텍처
 
-![vLLM Architecture](/assets/img/posts/llm-serving-1-vllm/arch-overview.png)
+![vLLM V1 Architecture](/assets/img/posts/llm-serving-1-vllm/arch-overview.png)
 
-요청이 처리되는 흐름은 다음과 같습니다.
+V1은 **다중 프로세스 아키텍처**입니다. 역할에 따라 세 종류의 프로세스로 분리됩니다.
 
 ```
 HTTP 요청
     ↓
-[API Server]  ─── FastAPI, OpenAI API 호환
+[API Server]          ─── FastAPI, OpenAI API 호환
     ↓
-[AsyncLLMEngine]  ─── 비동기 요청 큐 관리
+[AsyncLLM]            ─── 토크나이징·디토크나이징·스트리밍  (메인 프로세스)
+    │  ZMQ 소켓
     ↓
-[LLMEngine]
-    ├── [Scheduler]         ─── 요청 스케줄링, 선점 결정
-    │       └── [BlockSpaceManager]  ─── KV Cache 블록 할당
-    └── [ExecutorBase]
-            └── [Worker × N GPU]
-                    ├── [ModelRunner]   ─── 모델 forward pass
-                    └── [CacheEngine]  ─── KV Cache 초기화·이동
+[EngineCore]          ─── 스케줄링·KV 관리 루프           (별도 프로세스)
+    ├── [Scheduler]           ─── 요청 스케줄링, 선점 결정
+    │       └── [KVCacheManager]  ─── KV Cache 블록 할당·해제
+    └── [MultiprocExecutor]
+            └── [GPUWorker × N]   ─── GPU당 별도 프로세스
+                    └── [GPUModelRunner]  ─── 모델 forward pass
 ```
+
+**V0과의 가장 큰 차이**는 `EngineCore`가 별도 프로세스로 분리된 점입니다. `AsyncLLM`과 `EngineCore`는 ZMQ 소켓으로 통신하며, Python GIL 제약 없이 각각의 루프를 독립적으로 실행합니다.
 
 ---
 
@@ -64,99 +66,74 @@ HTTP 요청
 
 `vllm.entrypoints.openai.api_server`가 FastAPI 기반 HTTP 서버를 구동합니다. `/v1/chat/completions`, `/v1/completions` 엔드포인트가 OpenAI API 스펙을 그대로 구현하므로 기존 OpenAI SDK를 변경 없이 사용할 수 있습니다.
 
-### AsyncLLMEngine
+### AsyncLLM
 
-`AsyncLLMEngine`은 `LLMEngine`의 비동기 래퍼입니다. 역할은 두 가지입니다.
+`AsyncLLM`(`vllm/v1/engine/async_llm.py`)은 V1의 비동기 진입점입니다. 역할은 세 가지입니다.
 
-1. 동시 요청을 받아 내부 큐에 적재
-2. 백그라운드 루프에서 `LLMEngine.step()`을 반복 호출해 스케줄링·실행 루프를 돌림
+1. 동시 요청을 받아 토크나이징 후 `EngineCore`로 전달
+2. `EngineCore`로부터 출력 토큰을 받아 디토크나이징
+3. `AsyncGenerator`로 클라이언트에 토큰 스트리밍
 
-각 요청은 고유 `request_id`를 부여받고, 생성된 토큰은 `AsyncGenerator`로 스트리밍됩니다.
+`EngineCore`는 별도 프로세스(`EngineCoreProc`)로 실행되며, `AsyncLLM`은 `EngineCoreClient`를 통해 ZMQ로 요청을 전달하고 출력을 수신합니다. 입출력 처리와 스케줄링 루프가 분리되므로 하나가 지연되더라도 다른 쪽에 영향을 주지 않습니다.
 
 ---
 
-## 4. Scheduler와 BlockSpaceManager
+## 4. Scheduler와 KVCacheManager
 
 ### Scheduler
 
-`Scheduler`는 세 개의 큐를 관리합니다.
+`Scheduler`(`vllm/v1/core/sched/scheduler.py`)는 두 개의 큐를 관리합니다.
 
 ```
 waiting  ─── 아직 처리 시작 전 요청
 running  ─── 현재 GPU에서 실행 중인 요청
-swapped  ─── 선점당해 KV Cache가 CPU로 이동된 요청
 ```
 
-매 `step()`마다 스케줄러는 다음을 결정합니다.
+V1에서 **Swap 선점은 제거됐습니다.** 선점 발생 시 `KVCacheManager`가 해당 요청의 블록을 해제하고, 요청은 `waiting` 큐로 돌아가 **Recompute(재계산)** 방식으로 prefill을 다시 수행합니다.
 
-- `running` 큐 중 실행할 요청 선택 (FCFS 기본)
-- KV Cache 블록이 부족하면 실행 중인 요청을 **선점(preemption)**
+**Chunked Prefill**은 V1에서 **항상 활성화**됩니다. 긴 프롬프트를 `max_num_batched_tokens` 단위 청크로 나눠 decode 요청과 함께 배치합니다. decode 요청이 prefill로 인해 차단되는 현상을 방지하고, TTFT와 TPOT 간 균형을 조정합니다.
 
-**선점 정책**은 두 가지입니다.
+### KVCacheManager
 
-| 정책 | 방법 | 비용 |
-|:---|:---|:---|
-| **Swap** | KV Cache를 CPU RAM으로 이동, 나중에 복원 | swap I/O 비용 |
-| **Recompute** | KV Cache 삭제, 나중에 prefill 재수행 | 재계산 비용 |
-
-기본값은 Recompute입니다. 시퀀스가 짧을수록 재계산이 더 저렴하고, 길수록 Swap이 유리합니다.
-
-**Chunked Prefill**은 긴 프롬프트를 `max_num_batched_tokens` 단위 청크로 나눠 decode 요청과 함께 배치합니다. prefill이 decode iteration을 완전히 차단하던 문제를 해결해 TTFT(Time To First Token)와 TPOT(Time Per Output Token) 간 트레이드오프를 조정할 수 있습니다.
-
-### BlockSpaceManager
-
-**BlockSpaceManager**는 PagedAttention의 메모리 관리자입니다.
+**KVCacheManager**(`vllm/v1/core/kv_cache_manager.py`)는 PagedAttention의 메모리 관리자입니다. V0의 `BlockSpaceManager`에 해당합니다.
 
 ```
 논리 블록(Logical Block)  ──→  물리 블록(Physical Block)
-  [seq 0: block 0]        ──→  [GPU block #42]
-  [seq 0: block 1]        ──→  [GPU block #7 ]
-  [seq 1: block 0]        ──→  [GPU block #42]  ← 공유 (prefix 동일)
+  [req A: block 0]        ──→  [GPU block #42]
+  [req A: block 1]        ──→  [GPU block #7 ]
+  [req B: block 0]        ──→  [GPU block #42]  ← prefix 공유
 ```
 
 주요 동작은 다음과 같습니다.
 
-- `allocate()`: 새 요청에 물리 블록 할당
-- `free()`: 완료 요청의 블록 반환
-- `fork()`: prefix 공유 시 블록 ref_count 증가 (Copy-on-Write)
-- `can_allocate()`: 스케줄러가 새 요청 수락 가능 여부 판단에 사용
+- `allocate_slots()`: 실행 중인 요청에 새 토큰 슬롯 할당
+- `free()` / `free_slots()`: 완료 요청의 블록 반환
+- **해시 기반 prefix 캐싱**: 블록 내용의 해시로 동일 prefix를 감지해 자동 재사용. V1에서 기본 활성화.
+
+내부적으로 `KVCacheCoordinator`가 어텐션 레이어 타입별 `SingleTypeKVCacheManager`를 조율해 이기종 어텐션(예: 일부 레이어는 슬라이딩 윈도우, 일부는 전체 어텐션)에 대응합니다.
 
 ---
 
-## 5. Executor와 Worker
+## 5. Worker
 
-### ExecutorBase
+### MultiprocExecutor
 
-`ExecutorBase`는 Worker들을 추상화하는 레이어입니다. 실행 환경에 따라 세 가지 구현체가 있습니다.
+V1에서 Worker 조율은 `MultiprocExecutor`가 담당합니다. TP/PP 설정에 따라 필요한 수의 `GPUWorker` 프로세스를 생성하고, 각 프로세스에 실행 명령을 브로드캐스트합니다.
 
-| 구현체 | 대상 환경 |
-|:---|:---|
-| `GPUExecutor` | 단일 GPU |
-| `MultiprocessingGPUExecutor` | 단일 노드, 다중 GPU |
-| `RayGPUExecutor` | 다중 노드 (Ray 클러스터) |
+### GPUWorker
 
-`execute_model()`을 호출하면 Executor가 각 Worker에 동일한 명령을 브로드캐스트합니다. TP/PP가 설정된 경우 Worker들은 NCCL을 통해 서로 통신하며 실행합니다.
+`GPUWorker`(`vllm/v1/worker/gpu_worker.py`)는 하나의 GPU rank에 대응하는 프로세스입니다. 초기화 단계에서 모델 가중치를 로드하고, TP/PP 설정에 따라 가중치를 분할합니다. `EngineCore`가 결정한 KV Cache 텐서를 `bind_kv_cache()`로 전달받아 `GPUModelRunner`에 바인딩합니다.
 
-### Worker
+### GPUModelRunner
 
-`Worker`는 하나의 GPU rank에 대응하는 프로세스입니다. 초기화 단계에서 모델 가중치를 로드하고, TP/PP 설정에 따라 가중치를 분할합니다.
-
-### ModelRunner
-
-`ModelRunner`는 실제 forward pass를 담당합니다. `execute_model()` 호출 시 다음 순서로 실행됩니다.
+`GPUModelRunner`(`vllm/v1/worker/gpu_model_runner.py`)가 실제 forward pass를 담당합니다. 실행 순서는 다음과 같습니다.
 
 1. **입력 준비**: token IDs, position IDs, attention metadata (block table, context lengths) 구성
-2. **CUDA Graph 실행 또는 eager 실행**: decode phase에서 batch size가 작고 고정적이면 CUDA Graph로 kernel launch overhead 제거
+2. **CUDA Graph 또는 eager 실행**: decode phase에서 batch size가 작고 고정적이면 CUDA Graph로 kernel launch overhead 제거
 3. **모델 forward**: attention → FFN → LayerNorm 순으로 레이어 통과
 4. **샘플링**: logits에서 temperature, top-p, top-k 적용해 다음 토큰 선택
 
-### CacheEngine
-
-`CacheEngine`은 GPU KV Cache 텐서를 관리합니다.
-
-- `allocate_gpu_cache()`: 시작 시 레이어별 KV Cache 텐서 일괄 할당
-- `swap_in(blocks)` / `swap_out(blocks)`: 선점 시 CPU↔GPU KV Cache 이동
-- `copy(src, dst)`: Copy-on-Write 시 블록 복사
+KV Cache 텐서는 `EngineCore`가 시작 시 프로파일링을 통해 가용 GPU 메모리를 측정한 후 레이어별로 일괄 할당합니다. `GPUModelRunner`는 이를 `bind_kv_cache()`로 바인딩해 forward pass 중 직접 접근합니다. V0의 `CacheEngine`(swap\_in/swap\_out)은 V1에서 제거됐으며, Recompute 전략으로 대체됐습니다.
 
 ---
 
@@ -257,12 +234,12 @@ vllm serve deepseek-ai/DeepSeek-V2 \
 
 | 구성요소 | 역할 |
 |:---|:---|
-| `AsyncLLMEngine` | 비동기 요청 관리, 스트리밍 출력 |
-| `Scheduler` | FCFS + 선점, Chunked Prefill 스케줄링 |
-| `BlockSpaceManager` | PagedAttention 물리 블록 할당·해제 |
-| `ExecutorBase` | Worker 추상화, 실행 브로드캐스트 |
-| `Worker` / `ModelRunner` | GPU forward pass 실행 |
-| `CacheEngine` | KV Cache 할당·swap |
+| `AsyncLLM` | 비동기 요청 관리, 토크나이징·스트리밍 (메인 프로세스) |
+| `EngineCore` | 스케줄링·KV 관리 루프 (별도 프로세스, ZMQ) |
+| `Scheduler` | 2큐(waiting/running), Recompute 선점, Chunked Prefill |
+| `KVCacheManager` | PagedAttention 블록 할당·해제, 해시 기반 prefix 캐싱 |
+| `MultiprocExecutor` | GPUWorker 조율, 실행 브로드캐스트 |
+| `GPUWorker` / `GPUModelRunner` | GPU forward pass 실행, KV Cache 바인딩 |
 | NCCL 통신 | TP all_reduce, PP send/recv, EP all_to_all |
 | `KVConnector` | Disaggregated Prefill KV Cache 전송 |
 
