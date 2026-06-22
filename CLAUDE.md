@@ -135,8 +135,8 @@ python scripts/fetch-post-image.py pdf paper.pdf --page 3 --crop 50 400 500 700 
 # 웹 URL에서 다운로드
 python scripts/fetch-post-image.py url https://example.com/image.png --post gpu-arch-1 --name fig1-sm-structure
 
-# 의존성
-pip install pymupdf requests
+# 의존성 설치 불필요 — uv가 자동으로 처리
+# uv run scripts/fetch-post-image.py [args...]
 ```
 
 실행 시 `assets/img/posts/<slug>/attribution.md`에 출처가 자동 기록된다.
