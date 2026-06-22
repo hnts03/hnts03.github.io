@@ -101,6 +101,56 @@ mathjax: true     # 수식 포함 시
 ❌ 불확실한 수치를 마치 사실처럼 서술
 ```
 
+## 포스트 이미지 관리
+
+### 디렉토리 구조
+
+포스트별로 `assets/img/posts/<slug>/` 디렉토리를 사용한다. slug는 날짜·언어 접미사를 제외한 주제 식별자.
+
+```
+assets/img/posts/
+├── gpu-arch-1/              # GPU 아키텍처 #1 포스트
+│   ├── fig1-sm-structure.png
+│   └── attribution.md       # 이미지 출처 기록 (필수)
+└── llm-serving-overview/
+    └── attribution.md
+```
+
+마크다운 삽입:
+```markdown
+![SM 구조도](/assets/img/posts/gpu-arch-1/fig1-sm-structure.png)
+```
+
+### 이미지 취득 스크립트
+
+`scripts/fetch-post-image.py` — PDF 논문 figure 추출 또는 웹 이미지 다운로드.
+
+```bash
+# PDF에서 3페이지 전체 추출
+python scripts/fetch-post-image.py pdf paper.pdf --page 3 --post gpu-arch-1 --name fig1-sm-structure
+
+# PDF에서 특정 영역만 크롭 (x0 y0 x1 y1, PDF points 단위)
+python scripts/fetch-post-image.py pdf paper.pdf --page 3 --crop 50 400 500 700 --post gpu-arch-1 --name fig1-sm-structure
+
+# 웹 URL에서 다운로드
+python scripts/fetch-post-image.py url https://example.com/image.png --post gpu-arch-1 --name fig1-sm-structure
+
+# 의존성
+pip install pymupdf requests
+```
+
+실행 시 `assets/img/posts/<slug>/attribution.md`에 출처가 자동 기록된다.
+
+### 저작권 원칙
+
+| 소스 | 조건 |
+|:---|:---|
+| arXiv 논문 (CC BY) | attribution.md에 출처 명시 후 사용 가능 |
+| IEEE/ACM 논문 | 기술적으로 허가 필요. 사용 시 반드시 출처 명시 |
+| 웹 이미지 | 원본 페이지 라이선스 직접 확인 후 결정 |
+
+`attribution.md`가 없는 이미지 디렉토리는 커밋하지 않는다.
+
 ## 아키텍처 개요
 
 **Beautiful Jekyll** 기반 정적 사이트. GitHub Pages로 자동 배포.
