@@ -121,35 +121,49 @@ assets/img/posts/
 ![SM 구조도](/assets/img/posts/gpu-arch-1/fig1-sm-structure.png)
 ```
 
-### 이미지 취득 스크립트
+### 에이전트 이미지 워크플로우
 
-`scripts/fetch-post-image.py` — PDF 논문 figure 추출 또는 웹 이미지 다운로드.
+포스트 작성 시 에이전트가 직접 이미지를 취득한다. 유저 개입 없이 자동으로 처리하는 것과 유저 가이드가 필요한 것을 구분한다.
+
+**에이전트가 자율적으로 처리:**
+- WebSearch + WebFetch로 arXiv, 오픈소스 블로그에서 관련 이미지 탐색·다운로드
+- `scripts/gen-diagram.py`로 기술 다이어그램 코드 생성 (GPU 구조도, 메모리 레이아웃, 흐름도 등)
+- `assets/img/posts/<slug>/attribution.md`에 출처 자동 기록
+
+**유저 가이드 후 에이전트 처리:**
+- PDF에서 특정 figure 추출: 유저가 "이 논문 Figure N 써줘" 지시 → 에이전트가 `uv run scripts/fetch-post-image.py pdf ...` 실행
+
+**이미지 우선순위:**
+1. 코드 생성 다이어그램 (`scripts/gen-diagram.py`) — 정밀도 최우선, 저작권 문제 없음
+2. arXiv/CC 라이선스 웹 이미지 — 출처 명시 후 사용
+3. 논문 figure (비상업 블로그 fair use) — 반드시 출처 명시
+
+### 스크립트
 
 ```bash
-# PDF에서 3페이지 전체 추출
-python scripts/fetch-post-image.py pdf paper.pdf --page 3 --post gpu-arch-1 --name fig1-sm-structure
+# uv가 의존성 자동 설치·실행 (pip install 불필요)
 
-# PDF에서 특정 영역만 크롭 (x0 y0 x1 y1, PDF points 단위)
-python scripts/fetch-post-image.py pdf paper.pdf --page 3 --crop 50 400 500 700 --post gpu-arch-1 --name fig1-sm-structure
+# PDF에서 figure 추출 (에이전트가 직접 실행)
+uv run scripts/fetch-post-image.py pdf paper.pdf --page 3 --post gpu-arch-1 --name fig1-sm-structure
+uv run scripts/fetch-post-image.py pdf paper.pdf --page 3 --crop 50 400 500 700 --post gpu-arch-1 --name fig1-sm-structure
 
-# 웹 URL에서 다운로드
-python scripts/fetch-post-image.py url https://example.com/image.png --post gpu-arch-1 --name fig1-sm-structure
+# 웹 URL에서 다운로드 (에이전트가 직접 실행)
+uv run scripts/fetch-post-image.py url https://example.com/img.png --post gpu-arch-1 --name fig1
 
-# 의존성 설치 불필요 — uv가 자동으로 처리
-# uv run scripts/fetch-post-image.py [args...]
+# 다이어그램 생성 (에이전트가 직접 실행)
+uv run scripts/gen-diagram.py --post gpu-arch-1 --name sm-structure --type block
 ```
-
-실행 시 `assets/img/posts/<slug>/attribution.md`에 출처가 자동 기록된다.
 
 ### 저작권 원칙
 
-| 소스 | 조건 |
+| 소스 | 처리 방식 |
 |:---|:---|
-| arXiv 논문 (CC BY) | attribution.md에 출처 명시 후 사용 가능 |
-| IEEE/ACM 논문 | 기술적으로 허가 필요. 사용 시 반드시 출처 명시 |
-| 웹 이미지 | 원본 페이지 라이선스 직접 확인 후 결정 |
+| 코드 생성 다이어그램 | 제한 없음 |
+| arXiv 논문 (CC BY) | attribution.md에 논문 제목·저자·arXiv ID 기록 |
+| 논문 figure (IEEE/ACM 등) | 비상업 블로그 fair use. attribution.md에 DOI·저자 기록 필수 |
+| 웹 이미지 | 출처 URL·라이선스 attribution.md에 기록 |
 
-`attribution.md`가 없는 이미지 디렉토리는 커밋하지 않는다.
+`attribution.md` 없는 이미지 디렉토리는 커밋하지 않는다.
 
 ## 아키텍처 개요
 
