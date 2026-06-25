@@ -2,7 +2,6 @@ name: Beautiful Jekyll CI
 
 on:
   push:
-    branches: [dev-blog, master]
   pull_request:
   workflow_dispatch:
 
