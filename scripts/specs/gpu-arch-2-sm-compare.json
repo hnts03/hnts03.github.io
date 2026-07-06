@@ -1,0 +1,41 @@
+{
+  "title": "SM 구조 비교: Fermi → Kepler → Maxwell",
+  "groups": [
+    {
+      "label": "Fermi SM (2010)",
+      "color": "gray",
+      "items": [
+        {"label": "32 CUDA Cores", "sub": "FP32 / INT32"},
+        {"label": "Warp Scheduler ×2", "sub": "각 1 IDU"},
+        {"label": "DP Unit ×16"},
+        {"label": "SFU ×4 / LD-ST ×16"},
+        {"label": "Reg File 32K×32b"},
+        {"label": "L1/Shared 64KB", "sub": "비율 조정 공유"}
+      ]
+    },
+    {
+      "label": "Kepler SMX (2012)",
+      "color": "blue",
+      "items": [
+        {"label": "192 CUDA Cores", "sub": "FP32 / INT32"},
+        {"label": "Warp Scheduler ×4", "sub": "각 2 IDU"},
+        {"label": "DP Unit ×64"},
+        {"label": "SFU ×32 / LD-ST ×32"},
+        {"label": "Reg File 65K×32b"},
+        {"label": "L1/Shared 64KB", "sub": "비율 조정 공유"}
+      ]
+    },
+    {
+      "label": "Maxwell SMM (2014)",
+      "color": "green",
+      "items": [
+        {"label": "128 CUDA Cores", "sub": "4 Quad × 32 (전용)"},
+        {"label": "Warp Scheduler ×4", "sub": "각 32코어 전용"},
+        {"label": "DP Unit 없음", "sub": "(소비자향 GM204)"},
+        {"label": "SFU ×32 / LD-ST ×32"},
+        {"label": "Reg File 65K×32b"},
+        {"label": "Shared 96KB 전용", "sub": "L1+Tex 완전 분리"}
+      ]
+    }
+  ]
+}
