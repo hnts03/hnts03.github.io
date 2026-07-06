@@ -1,0 +1,41 @@
+{
+  "title": "SM 구조 비교: Maxwell → Pascal GP100 → Pascal GP104",
+  "groups": [
+    {
+      "label": "Maxwell SMM (GM200)",
+      "color": "gray",
+      "items": [
+        {"label": "128 FP32 Cores", "sub": "4 Quad × 32 (전용)"},
+        {"label": "Warp Scheduler ×4", "sub": "각 32코어 전용"},
+        {"label": "4 FP64 Cores", "sub": "FP32의 1/32"},
+        {"label": "Shared 96KB", "sub": "전용 (L1 완전 분리)"},
+        {"label": "메모리: GDDR5", "sub": "336 GB/s"},
+        {"label": "PCIe 3.0 x16", "sub": "~31 GB/s 양방향"}
+      ]
+    },
+    {
+      "label": "Pascal GP100 SM",
+      "color": "blue",
+      "items": [
+        {"label": "64 FP32 Cores", "sub": "2 Processing Block × 32"},
+        {"label": "32 FP64 Cores", "sub": "FP32의 1/2 (HPC)"},
+        {"label": "Warp Scheduler ×2", "sub": "각 2 IDU, 32코어 전용"},
+        {"label": "Shared 64KB", "sub": "전용 (L1+Tex 분리)"},
+        {"label": "메모리: HBM2", "sub": "732 GB/s"},
+        {"label": "NVLink 1.0", "sub": "160 GB/s 양방향"}
+      ]
+    },
+    {
+      "label": "Pascal GP104 SM",
+      "color": "green",
+      "items": [
+        {"label": "128 FP32 Cores", "sub": "4 Quad × 32 (전용)"},
+        {"label": "4 FP64 Cores", "sub": "FP32의 1/32"},
+        {"label": "Warp Scheduler ×4", "sub": "각 32코어 전용"},
+        {"label": "Shared 96KB", "sub": "전용 (Maxwell 동일)"},
+        {"label": "메모리: GDDR5X", "sub": "320 GB/s"},
+        {"label": "PCIe 3.0 x16", "sub": "~31 GB/s 양방향"}
+      ]
+    }
+  ]
+}
