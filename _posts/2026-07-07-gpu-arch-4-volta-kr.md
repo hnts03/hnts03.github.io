@@ -114,6 +114,8 @@ GV100 SM (4 Sub-core)
 
 SM 합산: FP32 64개, INT32 64개, FP64 32개, Tensor Core 8개,
          LD/ST 32개, SFU 16개
+
+GV100 SM은 최대 **64 warps/SM, 32 블록/SM**을 동시에 보유할 수 있다. 레지스터 파일은 256KB/SM이다.
 ```
 
 ### Pascal GP100과의 구조 비교
@@ -375,6 +377,30 @@ __global__ void wmma_matmul(half *A, half *B, float *C,
 
 ---
 
+## 인터커넥트 및 외부 채널
+
+### PCIe 호스트 인터페이스
+
+V100 PCIe 버전은 **PCIe 3.0 x16**(단방향 16 GB/s)으로 호스트에 연결된다. SXM2 폼팩터는 NVLink 2.0이 GPU 간 주요 통신 채널이며, 호스트 연결에는 별도 PCIe 3.0 인터페이스를 사용한다.
+
+### L2 캐시 구조
+
+GV100의 L2는 **6MB 단일 통합 파티션**이다. 이후 Ampere A100에서 40MB 2-파티션 분리 구조로 전환한 것과 대비된다. V100 L2는 모든 SM이 균등하게 접근한다.
+
+### 외부 채널
+
+GV100은 데이터센터 전용 가속기다. 아래 기능이 의도적으로 제외됐다.
+
+| 기능 | 상태 |
+|:---|:---:|
+| NVENC | 없음 |
+| NVDEC | 없음 |
+| 디스플레이 출력 | 없음 |
+
+소비자 시장에는 Volta 기반 제품이 출시되지 않았다. Titan V(2017)도 GV100 기반이지만 디스플레이 출력과 NVENC/NVDEC를 탑재하지 않았다.
+
+---
+
 ## 정리
 
 | | Pascal GP100 | Volta GV100 |
@@ -395,6 +421,10 @@ __global__ void wmma_matmul(half *A, half *B, float *C,
 | HBM2 대역폭 | 732 GB/s | **900 GB/s** |
 | L2 Cache | 4MB | **6MB** |
 | NVLink | 1.0, 160 GB/s | **2.0, 300 GB/s** |
+| PCIe | 3.0 x16 | 3.0 x16 |
+| 최대 Warps/SM | 64 | 64 |
+| 최대 Blocks/SM | 32 | 32 |
+| NVENC | 없음 | 없음 |
 | 스레드 스케줄링 | Warp 단위 PC | **Thread 단위 PC** |
 | TDP (SXM2) | 300W | 300W |
 

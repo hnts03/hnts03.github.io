@@ -52,9 +52,11 @@ Fermi SM (GF100)           Kepler SMX (GK110)
  Warp Sched ×2               Warp Sched ×4
   (각 1 IDU)                  (각 2 IDU = 클럭당 8 이슈)
  DP Unit ×16                 DP Unit ×64
- Reg File 32,768×32b         Reg File 65,536×32b
+ SFU ×4                      SFU ×32
+ LD/ST ×16                   LD/ST ×32
+ Reg File 32,768×32b=128KB   Reg File 65,536×32b=256KB
  L1+Shared 64KB (공유)       L1+Shared 64KB (공유)
- 7.1B 트랜지스터             Warp 수 최대 64개/SMX
+ 최대 48 warps/SM            최대 64 warps/SMX, 16 블록/SMX
 ```
 
 GK110의 경우 SMX 15개로 총 2,880개의 CUDA Core를 탑재했습니다.
@@ -242,6 +244,32 @@ TLP로 latency 은닉      클럭당 최대 8 이슈        → 32코어 전용
 
 ---
 
+## 인터커넥트 및 외부 채널
+
+### PCIe 호스트 인터페이스
+
+Kepler는 NVIDIA GPU 최초로 **PCIe 3.0 x16**을 채택한 세대다. 이론 단방향 대역폭은 16 GB/s로 PCIe 2.0(8 GB/s)의 2배다. Maxwell도 PCIe 3.0 x16을 유지한다.
+
+### NVENC / NVDEC
+
+| | Kepler (GK104/GK110) | Maxwell (GM204/GM200) |
+|:---|:---:|:---:|
+| NVENC 세대 | **1세대** | **2세대** |
+| 인코드 코덱 | H.264 | H.264 + **HEVC** |
+| NVDEC 세대 | VP5 | VP6 |
+| 디코드 코덱 | H.264, VC-1 | +**HEVC 디코드** |
+
+Kepler는 최초로 하드웨어 H.264 인코더(NVENC)를 탑재했다. 이전 세대(Tesla/Fermi)는 디코드 전용이었다. Maxwell은 HEVC(H.265) 인코드와 디코드를 추가했다.
+
+### 디스플레이 출력 (소비자 GPU 레퍼런스 카드 기준)
+
+| 제품 | DP | HDMI | DVI |
+|:---|:---:|:---:|:---:|
+| GTX 680 (GK104) | 1.2 ×1 | 1.4 ×1 | ×2 |
+| GTX 980 Ti (GM200) | 1.2 ×3 | 2.0 ×1 | ×1 |
+
+---
+
 ## 정리
 
 | | Kepler GK110 (2012) | Maxwell GM204 (2014) |
@@ -250,8 +278,12 @@ TLP로 latency 은닉      클럭당 최대 8 이슈        → 32코어 전용
 | SM 내부 구조 | Monolithic | 4 Quadrant |
 | Warp Scheduler / SM | 4 (각 2 IDU) | 4 (각 전용 32코어) |
 | 코어 / Scheduler | 48 | **32** |
+| 레지스터 파일/SM | 256KB | 256KB |
+| L2 캐시 | GK110: 1.5MB | GM204: 2MB |
 | DP Unit / SM | 64 | - (GM204 소비자향) |
 | Shared Memory | 64KB (L1 공유) | 96KB (전용) |
+| PCIe | **3.0 x16** | 3.0 x16 |
+| NVENC | **1세대** (H.264) | **2세대** (H.264+HEVC) |
 | 대표 기능 | Dynamic Parallelism, Hyper-Q, Warp Shuffle | Unified Memory, Quadrant 설계 |
 | 공정 | 28nm | 28nm |
 | 대표 제품 | Tesla K40, GTX 680 | GTX 980, GTX Titan X |

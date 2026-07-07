@@ -178,12 +178,18 @@ Turing TU102 SM (changes from Volta marked)
 | RT Core / SM | none | **1** |
 | Unified L1 + Shared | **128KB** | **96KB** |
 | Max Shared Memory | **96KB** | **64KB** |
+| Register file / SM | 256 KB | 256 KB |
+| Max warps / SM | 64 | **32** |
+| Max blocks / SM | 32 | **16** |
+| L2 cache | 6 MB | TU102: 6 MB, T4: 4 MB |
 | Thread scheduling | Per-thread PC | Per-thread PC (inherited) |
 | Memory | HBM2 900 GB/s | GDDR6 616 GB/s |
 
 FP64 removal reflects the consumer and inference positioning: the 32 FP64 cores per SM in GV100 consumed significant die area for HPC double-precision workloads that gaming and AI inference do not need.
 
 The reduction from 128KB to 96KB unified L1/Shared partially offset the RT Core area addition while staying on the same 12nm process. Maximum shared memory per SM drops from 96KB to 64KB.
+
+Turing's maximum in-flight warps per SM drops from Volta's 64 to **32** — half. This reflects the smaller unified L1/Shared (96 KB vs 128 KB); larger per-warp shared memory allocations more quickly hit the warp-count ceiling.
 
 ---
 
@@ -268,6 +274,33 @@ Image quality: approaching native 4K
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+All Turing GPUs — consumer RTX 20-series and the T4 inference card — use **PCIe 3.0 x16** (16 GB/s unidirectional). Consumer Turing has no NVLink. The T4 is a passive-cooled card drawing only PCIe slot power (75 W).
+
+### NVENC / NVDEC
+
+| | RTX 2080 Ti (TU102) | T4 (Inference) |
+|:---|:---:|:---:|
+| NVENC generation | **7th gen** | 7th gen |
+| Encode codecs | H.264, HEVC, **first hardware B-frames** | H.264, HEVC |
+| NVDEC generation | **5th gen** | 5th gen |
+| Decode codecs | H.264, HEVC, **VP9** | H.264, HEVC, VP9 |
+| Display outputs | Yes | None (datacenter) |
+
+Turing's 7th-gen NVENC introduced **hardware B-frame encoding** for H.264 and HEVC — absent from all prior NVENC generations, which handled only I and P frames in hardware.
+
+### Display Outputs (consumer reference cards)
+
+| Product | DP | HDMI | USB-C |
+|:---|:---:|:---:|:---:|
+| RTX 2080 Ti (TU102) | 1.4 ×3 | 2.0b ×1 | VirtualLink ×1 |
+| T4 | None (datacenter) | None | None |
+
+---
+
 ## Summary
 
 | | Volta GV100 | Turing TU102 |
@@ -277,8 +310,11 @@ Image quality: approaching native 4K
 | FP64 / SM | **32** | **none** |
 | Tensor Core precision | FP16 | FP16 + **INT8 + INT4** |
 | RT Core | none | **1 / SM** |
+| Max warps / SM | 64 | **32** |
 | Memory | HBM2 900 GB/s | GDDR6 616 GB/s |
 | Max Shared Memory | **96KB** | **64KB** |
+| PCIe | 3.0 x16 | 3.0 x16 |
+| NVENC | None | **7th gen** (B-frame) |
 | Thread scheduling | Per-thread PC | Per-thread PC (identical) |
 | Key new APIs | WMMA, Cooperative Groups | **DXR, Vulkan RT, OptiX 7, DLSS** |
 

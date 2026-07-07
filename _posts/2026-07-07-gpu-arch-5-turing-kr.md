@@ -186,7 +186,13 @@ Turing TU102 SM (Volta 대비 변경사항 표시)
 | SM당 RT Core | 없음 | **1개** |
 | Unified L1+Shared | **128KB** | **96KB** |
 | 최대 Shared Memory | **96KB** | **64KB** |
+| 레지스터 파일/SM | 256KB | 256KB |
+| 최대 Warps/SM | 64 | **32** |
+| 최대 Blocks/SM | 32 | **16** |
+| L2 캐시 | 6MB (TU102) | TU102: 6MB, T4: 4MB |
 | 스레드 스케줄링 | Thread 단위 PC | Thread 단위 PC (계승) |
+
+Turing SM은 SM당 최대 warp 수가 Volta의 64에서 **32로 절반** 감소했다. Unified L1+Shared가 128KB에서 96KB로 줄어든 것에 대응한 설계 변화다. SM당 블록 수도 32에서 16으로 줄었다.
 
 FP64 코어 제거는 면적 절감과 소비자 GPU 포지셔닝 때문이다. GV100의 32 FP64/SM은 HPC 과학 계산을 위한 설계 선택이었고, 게임/AI 추론 GPU에서는 불필요하다.
 
@@ -287,6 +293,33 @@ DLSS 1.0 파이프라인
 
 Tensor Core 사용: INT8 추론으로 업스케일 네트워크 실행
 ```
+
+---
+
+## 인터커넥트 및 외부 채널
+
+### PCIe 호스트 인터페이스
+
+TU102/TU104 소비자 GPU와 T4 추론 카드 모두 **PCIe 3.0 x16**(단방향 16 GB/s)을 사용한다. 소비자 Turing에는 NVLink가 없다. T4는 PCIe 슬롯 전력(75W)만으로 동작하는 패시브 쿨링 카드다.
+
+### NVENC / NVDEC
+
+| | RTX 2080 Ti (TU102) | T4 (추론) |
+|:---|:---:|:---:|
+| NVENC 세대 | **7세대** | 7세대 |
+| 인코드 코덱 | H.264, HEVC, **B-프레임 최초 지원** | H.264, HEVC |
+| NVDEC 세대 | **5세대** | 5세대 |
+| 디코드 코덱 | H.264, HEVC, **VP9** | H.264, HEVC, VP9 |
+| 디스플레이 출력 | 있음 | 없음 |
+
+Turing 7세대 NVENC는 H.264와 HEVC 인코딩에서 **B-프레임(Bi-directional frame) 하드웨어 지원**을 처음 도입했다. 이전 세대 NVENC는 I/P 프레임만 하드웨어로 처리했다.
+
+### 디스플레이 출력 (소비자 GPU 레퍼런스)
+
+| 제품 | DP | HDMI | USB-C |
+|:---|:---:|:---:|:---:|
+| RTX 2080 Ti (TU102) | 1.4 ×3 | 2.0b ×1 | VirtualLink ×1 |
+| T4 | 없음 (데이터센터) | 없음 | 없음 |
 
 ---
 

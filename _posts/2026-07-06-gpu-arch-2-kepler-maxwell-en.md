@@ -52,9 +52,11 @@ Fermi SM (GF100)           Kepler SMX (GK110)
  Warp Sched ×2               Warp Sched ×4
   (1 IDU each)                (2 IDU each = 8 issues/clock)
  DP Unit ×16                 DP Unit ×64
- Reg File 32,768×32b         Reg File 65,536×32b
+ SFU ×4                      SFU ×32
+ LD/ST ×16                   LD/ST ×32
+ Reg File 32,768×32b=128KB   Reg File 65,536×32b=256KB
  L1+Shared 64KB (shared)     L1+Shared 64KB (shared)
-                              Max 64 warps / SMX
+ Max 48 warps/SM             Max 64 warps/SMX, 16 blocks/SMX
 ```
 
 GK110 packed 15 SMX units for a total of 2,880 CUDA Cores.
@@ -235,6 +237,32 @@ TLP hides latency      max 8 issues/clock     Quad 3: Sched
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+Kepler was NVIDIA's first architecture with **PCIe 3.0 x16** — 16 GB/s unidirectional, double PCIe 2.0. Maxwell retains PCIe 3.0 x16.
+
+### NVENC / NVDEC
+
+| | Kepler (GK104/GK110) | Maxwell (GM204/GM200) |
+|:---|:---:|:---:|
+| NVENC generation | **1st gen** | **2nd gen** |
+| Encode codecs | H.264 | H.264 + **HEVC** |
+| NVDEC generation | VP5 | VP6 |
+| Decode codecs | H.264, VC-1 | + **HEVC decode** |
+
+Kepler introduced the first hardware H.264 encoder (NVENC). Prior generations (Tesla, Fermi) had decode-only video units. Maxwell added HEVC (H.265) encode and decode.
+
+### Display Outputs (consumer reference cards)
+
+| Product | DP | HDMI | DVI |
+|:---|:---:|:---:|:---:|
+| GTX 680 (GK104) | 1.2 ×1 | 1.4 ×1 | ×2 |
+| GTX 980 Ti (GM200) | 1.2 ×3 | 2.0 ×1 | ×1 |
+
+---
+
 ## Summary
 
 | | Kepler GK110 (2012) | Maxwell GM204 (2014) |
@@ -243,8 +271,12 @@ TLP hides latency      max 8 issues/clock     Quad 3: Sched
 | SM internal structure | Monolithic | 4 Quadrants |
 | Warp Schedulers / SM | 4 (2 IDU each) | 4 (32 dedicated cores each) |
 | Cores / Scheduler | 48 | **32** |
+| Register file / SM | 256 KB | 256 KB |
+| L2 cache | GK110: 1.5 MB | GM204: 2 MB |
 | DP Units / SM | 64 | — (consumer GM204) |
 | Shared Memory | 64KB (shared with L1) | 96KB (dedicated) |
+| PCIe | **3.0 x16** | 3.0 x16 |
+| NVENC | **1st gen** (H.264) | **2nd gen** (H.264+HEVC) |
 | Key features | Dynamic Parallelism, Hyper-Q, Warp Shuffle | Unified Memory, Quadrant design |
 | Process | 28nm | 28nm |
 | Representative products | Tesla K40, GTX 680 | GTX 980, GTX Titan X |

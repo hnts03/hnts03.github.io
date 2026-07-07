@@ -107,6 +107,8 @@ GV100 SM (4 Sub-cores)
 └──────────────────────────────────────────────────────┘
 
 SM totals: 64 FP32, 64 INT32, 32 FP64, 8 TC, 32 LD/ST, 16 SFU
+
+GV100 SM supports up to **64 warps/SM, 32 blocks/SM** in-flight. Register file: 256 KB/SM.
 ```
 
 ### Pascal GP100 vs. Volta GV100
@@ -324,6 +326,30 @@ __global__ void wmma_mm(half *A, half *B, float *C, int M, int N, int K) {
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+The V100 PCIe card connects to the host via **PCIe 3.0 x16** (16 GB/s unidirectional). The SXM2 form factor also uses PCIe 3.0 for host connectivity; NVLink 2.0 handles GPU-to-GPU traffic.
+
+### L2 Cache Topology
+
+GV100's 6 MB L2 is a **single unified partition** — all SMs access it symmetrically through a shared crossbar. This contrasts with Ampere A100's 40 MB split into two physically separate 20 MB partitions.
+
+### External Channels
+
+GV100 is a datacenter-only accelerator. The following are intentionally absent:
+
+| Feature | Status |
+|:---|:---:|
+| NVENC | None |
+| NVDEC | None |
+| Display outputs | None |
+
+No consumer Volta product was released. The Titan V (2017) uses GV100 but also omits NVENC, NVDEC, and display outputs.
+
+---
+
 ## Summary
 
 | | Pascal GP100 | Volta GV100 |
@@ -344,6 +370,10 @@ __global__ void wmma_mm(half *A, half *B, float *C, int M, int N, int K) {
 | HBM2 bandwidth | 732 GB/s | **900 GB/s** |
 | L2 Cache | 4 MB | **6 MB** |
 | NVLink | 1.0, 160 GB/s | **2.0, 300 GB/s** |
+| PCIe | 3.0 x16 | 3.0 x16 |
+| Max warps / SM | 64 | 64 |
+| Max blocks / SM | 32 | 32 |
+| NVENC | None | None |
 | Thread scheduling | warp-shared PC | **per-thread PC** |
 | TDP (SXM2) | 300 W | 300 W |
 

@@ -167,11 +167,16 @@ GA102's key change: the INT32 pipeline can also execute FP32 instructions, doubl
 | TC generation | 1st | 2nd | **3rd** | **3rd** |
 | TC precision | FP16 | FP16/INT8/INT4 | +**TF32/BF16/FP64 TC** | +TF32/BF16 |
 | 2:4 Sparsity | none | none | **yes (2× throughput)** | **yes** |
-| RT Core | none | 1st gen | **2nd gen** | **2nd gen** |
+| RT Core | none | 1st gen | **none (datacenter)** | **2nd gen** |
 | Unified L1+Shared | 128KB | 96KB | **192KB** | 128KB |
 | Max Shared Memory | 96KB | 64KB | **164KB** | 100KB |
+| Register file / SM | 256 KB | 256 KB | 256 KB | 256 KB |
+| Max warps / SM | 64 | 32 | **64** | **48** |
+| Max blocks / SM | 32 | 16 | **32** | **16** |
 
 GA100 expands the unified L1/Shared to 192KB — critical for fitting larger GEMM tiles in shared memory and reducing global memory round-trips.
+
+GA100 (A100) has no RT Core — it is a datacenter accelerator with no graphics functionality. GA102 (RTX 30-series) carries **2nd-gen RT Cores** with higher BVH throughput than Turing's 1st gen. GA100's maximum occupancy matches GV100 at 64 warps/SM; GA102 sits between the two at 48 warps/SM.
 
 ---
 
@@ -353,6 +358,40 @@ The A100 SXM4 80GB was the workhorse for GPT-3-scale training. FP16 storage for 
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+Ampere was NVIDIA's first architecture with **PCIe 4.0 x16** — 32 GB/s unidirectional, double PCIe 3.0.
+
+| Product | PCIe Generation | Unidirectional BW |
+|:---|:---:|---:|
+| A100 PCIe | **PCIe 4.0 x16** | 32 GB/s |
+| RTX 3090 (GA102) | **PCIe 4.0 x16** | 32 GB/s |
+| RTX 2080 Ti (Turing, reference) | PCIe 3.0 x16 | 16 GB/s |
+
+### NVENC / NVDEC
+
+| | A100 (GA100) | RTX 3090 (GA102) |
+|:---|:---:|:---:|
+| NVENC generation | None | **8th gen** |
+| Encode codecs | — | H.264, HEVC, **AV1 encode — first ever** |
+| NVDEC generation | None | **5th gen** |
+| Decode codecs | — | H.264, HEVC, VP9, **AV1** |
+| Display outputs | None | Yes |
+
+GA102 (RTX 30-series) is the first NVIDIA generation with **hardware AV1 encode**. A100 omits NVENC, NVDEC, and display outputs entirely.
+
+### Display Outputs (consumer reference cards)
+
+| Product | DP | HDMI |
+|:---|:---:|:---:|
+| RTX 3090 (GA102) | 1.4a ×3 | **2.1 ×1** |
+
+HDMI 2.1 supports 4K@120Hz and 8K@60Hz.
+
+---
+
 ## Summary
 
 | | Turing TU102 | Ampere GA100 (A100) | Ampere GA102 (RTX 3090) |
@@ -362,6 +401,9 @@ The A100 SXM4 80GB was the workhorse for GPT-3-scale training. FP16 storage for 
 | FP64 TC | none | **19.5 TFLOPS** | none |
 | TC precision | FP16/INT8/INT4 | +**TF32/BF16/FP64 TC** | +TF32/BF16 |
 | 2:4 Sparsity | none | **yes (2× throughput)** | **yes** |
+| RT Core | 1st gen | **none** | **2nd gen** |
+| PCIe | 3.0 x16 | **4.0 x16** | **4.0 x16** |
+| NVENC | 7th gen | None | **8th gen (AV1)** |
 | MIG | none | **up to 7 instances** | none |
 | Memory | GDDR6 616 GB/s | **HBM2e 2 TB/s, 40MB L2** | GDDR6X 936 GB/s |
 | NVLink | none | **NVLink 3.0 (600 GB/s)** | none |

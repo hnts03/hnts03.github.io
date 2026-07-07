@@ -133,9 +133,11 @@ Tesla SM (G80)
 ├── 2× SFU (Special Function Unit: sin, cos, sqrt, rcp 등)
 ├── Instruction Cache
 ├── Warp Scheduler (1개)
-├── Register File (8,192 × 32-bit)
+├── Register File (8,192 × 32-bit = 32KB/SM)
 └── Shared Memory (16 KB)
 ```
+
+G80 SM은 최대 **24 warps/SM, 8 블록/SM**을 동시에 보유(in-flight)할 수 있다.
 
 **Register File**: 모든 스레드 컨텍스트가 레지스터 파일에 올라와 있습니다. Warp 전환 시 별도의 컨텍스트 저장/복원이 필요하지 않습니다. 이 zero-overhead switching이 GPU Warp 스케줄링의 핵심입니다.
 
@@ -155,9 +157,11 @@ Fermi SM
 ├── 4× SFU
 ├── 16× Load/Store Unit
 ├── 2× Warp Scheduler (Dual-Issue 지원)
-├── Register File (32,768 × 32-bit)
+├── Register File (32,768 × 32-bit = 128KB/SM)
 └── L1 Cache / Shared Memory (64 KB, 비율 조정 가능)
 ```
+
+Fermi SM은 최대 **48 warps/SM, 8 블록/SM**을 동시에 보유(in-flight)할 수 있다. G80(24 warps)에서 2배 증가했다.
 
 **Dual Warp Scheduler**: SM당 Warp Scheduler가 2개로 늘었습니다. 매 사이클 최대 2개의 Warp를 동시에 이슈할 수 있어 실행 유닛을 더 촘촘하게 채울 수 있습니다.
 
@@ -183,16 +187,46 @@ Fermi는 CUDA 2.0과 함께 출시되면서 C++ 문법, 재귀 호출, 함수 �
 
 ---
 
+## 인터커넥트 및 외부 채널
+
+### PCIe 호스트 인터페이스
+
+G80(Tesla)과 GF100(Fermi) 모두 **PCIe 2.0 x16**으로 호스트 CPU와 연결된다. 이론 단방향 대역폭은 8 GB/s다.
+
+### NVENC / NVDEC
+
+| | G80 (Tesla) | GF100 (Fermi) |
+|:---|:---:|:---:|
+| NVENC | 없음 | 없음 |
+| 비디오 디코드 | VP2 (H.264, MPEG-2) | VP4 (H.264, VC-1, MPEG-2) |
+
+NVENC(하드웨어 인코더)는 Kepler(2012)에서 처음 도입됐다. Tesla/Fermi는 디코드 전용 유닛만 포함한다.
+
+### 메모리 대역폭
+
+| 제품 | 타입 | 버스 폭 | 대역폭 |
+|:---|:---:|:---:|---:|
+| GeForce 8800 GTX (G80) | GDDR3 | 384-bit | 86 GB/s |
+| GeForce GTX 580 (GF100) | GDDR5 | 384-bit | ~192 GB/s |
+
+---
+
 ## 정리
 
 | | Tesla (G80, 2006) | Fermi (GF100, 2010) |
 |:---|:---:|:---:|
 | CUDA Core / SM | 8 | 32 |
 | Warp Scheduler / SM | 1 | 2 |
-| L1 Cache | X | 16~48 KB |
-| L2 Cache | X | 768 KB |
+| 레지스터 파일/SM | 32KB | 128KB |
+| 최대 Warps/SM | 24 | 48 |
+| 최대 Blocks/SM | 8 | 8 |
+| L1 Cache | 없음 | 16~48 KB |
+| L2 Cache | 없음 | 768 KB |
+| PCIe | 2.0 x16 | 2.0 x16 |
+| DRAM | GDDR3 (86 GB/s) | GDDR5 (~192 GB/s) |
 | FP64 | 부분 지원 | IEEE 754 완전 준수 |
-| ECC | X | O |
+| ECC | 없음 | O |
+| NVENC | 없음 | 없음 |
 | Shared Memory | 16 KB | 16 or 48 KB |
 
 Tesla는 SIMT와 CUDA라는 개념을 제안한 아키텍처이고, Fermi는 그 위에서 실제 HPC 워크로드를 실행할 수 있는 기반을 완성한 아키텍처입니다.

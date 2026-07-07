@@ -135,9 +135,11 @@ Tesla SM (G80)
 ├── 2× SFU (Special Function Unit: sin, cos, sqrt, rcp, etc.)
 ├── Instruction Cache
 ├── Warp Scheduler (1)
-├── Register File (8,192 × 32-bit)
+├── Register File (8,192 × 32-bit = 32 KB/SM)
 └── Shared Memory (16 KB)
 ```
+
+G80 SM can hold up to **24 warps/SM, 8 blocks/SM** in-flight simultaneously.
 
 **Register File**: All thread contexts are kept live in the register file. Warp switching requires no save/restore — this zero-overhead context switching is what makes GPU warp scheduling practical.
 
@@ -157,9 +159,11 @@ Fermi SM
 ├── 4× SFU
 ├── 16× Load/Store Unit
 ├── 2× Warp Scheduler (dual-issue capable)
-├── Register File (32,768 × 32-bit)
+├── Register File (32,768 × 32-bit = 128 KB/SM)
 └── L1 Cache / Shared Memory (64 KB, configurable ratio)
 ```
+
+Fermi SM supports up to **48 warps/SM, 8 blocks/SM** in-flight — 2× Tesla's 24 warps/SM.
 
 **Dual Warp Scheduler**: Two warp schedulers per SM allow up to two warps to be issued per cycle. This doesn't simply double throughput — it allows instructions from different warps to fill execution units without overlap, improving IPC.
 
@@ -185,16 +189,46 @@ Fermi shipped with CUDA 2.0, adding C++ features, recursion, and function pointe
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+Both G80 (Tesla) and GF100 (Fermi) connect to the host CPU via **PCIe 2.0 x16** — 8 GB/s unidirectional theoretical bandwidth.
+
+### NVENC / NVDEC
+
+| | G80 (Tesla) | GF100 (Fermi) |
+|:---|:---:|:---:|
+| NVENC | None | None |
+| Video decode | VP2 (H.264, MPEG-2) | VP4 (H.264, VC-1, MPEG-2) |
+
+Hardware video encode (NVENC) was introduced with Kepler (2012). Tesla and Fermi include decode-only fixed-function video units.
+
+### Memory Bandwidth
+
+| Product | Type | Bus width | Bandwidth |
+|:---|:---:|:---:|---:|
+| GeForce 8800 GTX (G80) | GDDR3 | 384-bit | 86 GB/s |
+| GeForce GTX 580 (GF100) | GDDR5 | 384-bit | ~192 GB/s |
+
+---
+
 ## Summary
 
 | | Tesla (G80, 2006) | Fermi (GF100, 2010) |
 |:---|:---:|:---:|
 | CUDA Cores / SM | 8 | 32 |
 | Warp Schedulers / SM | 1 | 2 |
+| Register file / SM | 32 KB | 128 KB |
+| Max warps / SM | 24 | 48 |
+| Max blocks / SM | 8 | 8 |
 | L1 Cache | None | 16–48 KB |
 | L2 Cache | None | 768 KB |
+| PCIe | 2.0 x16 | 2.0 x16 |
+| DRAM | GDDR3 (86 GB/s) | GDDR5 (~192 GB/s) |
 | FP64 | Partial | Full IEEE 754 |
 | ECC | No | Yes |
+| NVENC | None | None |
 | Shared Memory | 16 KB | 16 or 48 KB |
 
 Tesla introduced SIMT and CUDA to the world. Fermi built the infrastructure to run real HPC workloads on top of that foundation.

@@ -169,9 +169,17 @@ SM 합계 (4 Sub-core):
 | TC 세대 | 3세대 | **4세대** |
 | TC 지원 정밀도 | TF32/BF16/FP16/INT8/FP64 TC | +**FP8 (E4M3, E5M2)** |
 | 2:4 Sparsity | 있음 | **있음** |
+| RT Core | 없음 | **없음 (데이터센터 전용)** |
 | Distributed Shared Memory | 없음 | **있음** |
 | Unified L1+Shared | 192KB | **228KB** |
 | 최대 Shared Memory | 164KB | **228KB** |
+| 레지스터 파일/SM | 256KB | 256KB |
+| 최대 Warps/SM | 64 | 64 |
+| 최대 Blocks/SM | 32 | 32 |
+
+GH100 SM은 최대 **64 warps/SM, 32 블록/SM**을 동시에 보유할 수 있다. 레지스터 파일은 256KB/SM으로 Ampere와 동일하다.
+
+H100(GH100)에는 **RT Core가 없다**. Turing과 Ampere GA102의 RT Core는 소비자 GPU 전용 기능으로, 데이터센터 가속기에는 포함되지 않는다. A100(GA100)도 RT Core가 없으며, H100은 이 정책을 계승한다.
 
 Hopper SM은 Ampere GA100 대비 FP32를 2배(64→128), FP64를 2배(32→64)로 늘렸다. 공정 전환(7nm→4nm)이 같은 다이 면적에서 이 증가를 가능하게 했다.
 
@@ -387,6 +395,35 @@ with te.fp8_autocast(enabled=True, fp8_recipe=fp8_recipe):
 ### Flash Attention v3
 
 Flash Attention v3는 Hopper 전용 최적화를 포함한다. 4세대 TC의 비동기 실행과 Thread Block Cluster 기반 Distributed Shared Memory를 활용해 Attention 계산을 가속한다. 기존 Flash Attention v2 대비 H100에서 약 1.5-2배 성능 향상이 보고됐다.
+
+---
+
+## 인터커넥트 및 외부 채널
+
+### PCIe 호스트 인터페이스
+
+H100 PCIe 버전은 **PCIe 5.0 x16**을 최초로 도입했다. 이론 단방향 대역폭은 64 GB/s(PCIe 4.0의 2배)다. H100 SXM5도 PCIe 5.0 호스트 인터페이스를 갖추며, GPU 간 주요 통신은 NVLink 4.0이 담당한다.
+
+| 제품 | PCIe 세대 | 단방향 대역폭 |
+|:---|:---:|---:|
+| H100 SXM5 | **PCIe 5.0 x16** | 64 GB/s |
+| H100 PCIe | **PCIe 5.0 x16** | 64 GB/s |
+| A100 (참고) | PCIe 4.0 x16 | 32 GB/s |
+
+### HBM3 버스 폭
+
+H100 SXM5의 HBM3는 5개 스택, 스택당 1,024-bit = **총 5,120-bit 버스**를 통해 3,350 GB/s를 제공한다.
+
+### 외부 채널
+
+H100은 데이터센터 전용 가속기다. 다음 기능이 없다.
+
+| 기능 | 상태 |
+|:---|:---:|
+| RT Core | 없음 |
+| NVENC | 없음 |
+| NVDEC | 없음 |
+| 디스플레이 출력 | 없음 |
 
 ---
 

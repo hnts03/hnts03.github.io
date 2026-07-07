@@ -72,6 +72,8 @@ GP100 SM (64 FP32 + 32 FP64)
 
 The FP32-to-scheduler ratio stays at 32:1 — matching Maxwell's Quadrant philosophy. The key change is the **FP64 ratio**: GM200 carried 4 FP64 cores per SM (1/32 of FP32), while GP100 carries 32 (1/2 of FP32). This directly targets HPC scientific workloads.
 
+GP100 SM supports up to **64 warps/SM, 32 blocks/SM** in-flight simultaneously.
+
 GP102 and GP104 retain Maxwell SMM's 4 Quadrant, 128-core layout. FP64 cores remain at 4 per SM (1/32 ratio), keeping FP64 performance minimal for consumer use.
 
 ![SM Structure Comparison: Maxwell → Pascal](/assets/img/posts/gpu-arch-3/sm-compare.png)
@@ -183,6 +185,39 @@ Pascal (CC 6.x — GP100, GP102, GP104) introduces **instruction-level preemptio
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+GP102/GP104 consumer GPUs use **PCIe 3.0 x16** (16 GB/s unidirectional) as the host interface. GP100 (P100) also carries PCIe 3.0 x16 for host connectivity; NVLink 1.0 handles GPU-to-GPU traffic separately.
+
+### L2 Cache
+
+| Die | L2 Cache |
+|:---|---:|
+| GP100 (P100) | 4 MB |
+| GP102 (GTX 1080 Ti) | ~3.5 MB |
+| GP104 (GTX 1080) | 2 MB |
+
+### NVENC / NVDEC
+
+| | GP100 (P100) | GP102 / GP104 (Consumer) |
+|:---|:---:|:---:|
+| NVENC | None | **3rd gen** (H.264, HEVC 10-bit) |
+| NVDEC | None | **3rd gen** (HEVC 10-bit decode) |
+| Display outputs | None | Yes |
+
+GP100 is a datacenter card — no NVENC, NVDEC, or display outputs. Consumer Pascal (GP102/GP104) includes 3rd-gen NVENC/NVDEC with HEVC 10-bit encode and decode.
+
+### Display Outputs (consumer reference cards)
+
+| Product | DP | HDMI | DVI |
+|:---|:---:|:---:|:---:|
+| GTX 1080 Ti (GP102) | 1.4 ×3 | 2.0b ×1 | DVI-D ×1 |
+| GTX 1080 (GP104) | 1.4 ×3 | 2.0b ×1 | DVI-D ×1 |
+
+---
+
 ## Summary
 
 | | Maxwell GM200 | Pascal GP100 | Pascal GP104 |
@@ -191,8 +226,11 @@ Pascal (CC 6.x — GP100, GP102, GP104) introduces **instruction-level preemptio
 | CUDA Cores / SM | 128 (4 Quad) | **64** (2 PB) | 128 (4 Quad) |
 | FP64 Ratio | 1/32 | **1/2** | 1/32 |
 | Memory | GDDR5 336 GB/s | **HBM2 732 GB/s** | GDDR5X 320 GB/s |
+| L2 cache | 3 MB | 4 MB | 2 MB |
+| PCIe | 3.0 x16 | 3.0 x16 | 3.0 x16 |
 | GPU Interconnect | PCIe ~31 GB/s | **NVLink 160 GB/s** | PCIe ~31 GB/s |
 | Native FP16 | None | **2× FP32** | None |
+| NVENC | None | None | 3rd gen |
 | Unified Memory | Eager migration | **Page fault engine** | Page fault engine |
 | Compute Preemption | Block-level | **Instruction-level** | Instruction-level |
 

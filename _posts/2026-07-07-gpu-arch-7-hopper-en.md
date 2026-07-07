@@ -174,11 +174,17 @@ Per SM (4 sub-cores):
 | TC generation | 3rd | **4th** |
 | TC precision | TF32/BF16/FP16/INT8/FP64 TC | +**FP8 (E4M3, E5M2)** |
 | 2:4 Sparsity | yes | **yes** |
+| RT Core | none | **none (datacenter)** |
 | Distributed Shared Memory | none | **yes** |
 | Unified L1+Shared | 192KB | **228KB** |
 | Max Shared Memory | 164KB | **228KB** |
+| Register file / SM | 256 KB | 256 KB |
+| Max warps / SM | 64 | 64 |
+| Max blocks / SM | 32 | 32 |
 
-Both FP32 and FP64 per SM double from A100 to H100 — the 4nm → 7nm process gives room for this without increasing die area.
+Both FP32 and FP64 per SM double from A100 to H100 — the 4nm process node provides the transistor density without increasing die area. GH100 supports up to **64 warps/SM, 32 blocks/SM** in-flight, matching A100.
+
+H100 (GH100) has **no RT Core**. RT Cores appear only in consumer-facing Turing and Ampere GA102 dies. A100 also lacks RT Cores; H100 follows the same policy — the die area is allocated to FP64 TC, Transformer Engine logic, and greater SM counts instead.
 
 The unified L1+Shared grows to 228KB, and the full 228KB can be configured as shared memory (up to 228KB, vs A100's max 164KB). This benefits large-tile GEMM and Flash Attention implementations that tile KV matrices into shared memory.
 
@@ -374,6 +380,35 @@ For large-context inference workloads where KV caches exceed HBM capacity, GH200
 
 ---
 
+## Interconnect and External Channels
+
+### PCIe Host Interface
+
+The H100 PCIe card is NVIDIA's first GPU with **PCIe 5.0 x16** — 64 GB/s unidirectional (2× PCIe 4.0). H100 SXM5 also uses PCIe 5.0 for host connectivity; NVLink 4.0 handles GPU-to-GPU traffic.
+
+| Product | PCIe Generation | Unidirectional BW |
+|:---|:---:|---:|
+| H100 SXM5 | **PCIe 5.0 x16** | 64 GB/s |
+| H100 PCIe | **PCIe 5.0 x16** | 64 GB/s |
+| A100 (reference) | PCIe 4.0 x16 | 32 GB/s |
+
+### HBM3 Bus Width
+
+H100 SXM5's HBM3 spans 5 stacks × 1,024-bit = **5,120-bit total bus**, delivering 3,350 GB/s peak bandwidth.
+
+### External Channels
+
+H100 is a datacenter-only accelerator. The following are absent by design:
+
+| Feature | Status |
+|:---|:---:|
+| RT Core | None |
+| NVENC | None |
+| NVDEC | None |
+| Display outputs | None |
+
+---
+
 ## Summary
 
 | | Ampere GA100 (A100) | Hopper GH100 (H100) |
@@ -386,7 +421,10 @@ For large-context inference workloads where KV caches exceed HBM capacity, GH200
 | Transformer Engine | none | **yes** |
 | Thread Block Cluster | none | **yes (up to 8 blocks)** |
 | Distributed Shared Memory | none | **yes** |
+| RT Core | none | **none** |
 | NVLink | 3.0 (600 GB/s) | **4.0 (900 GB/s)** |
+| PCIe | 4.0 x16 | **5.0 x16** |
+| NVENC | none | none |
 | Memory | HBM2e 2 TB/s, 40MB L2 | **HBM3 3.35 TB/s, 50MB L2** |
 | Max Shared Memory | 164KB | **228KB** |
 | MIG | yes (7 instances) | **yes (7 instances)** |
