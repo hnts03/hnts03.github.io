@@ -1,0 +1,25 @@
+<div class="lang-filter-bar">
+  <div class="btn-group btn-group-sm" role="group" aria-label="Language filter">
+    <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="kr" onclick="filterLang('kr')">한국어</button>
+    <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="all" onclick="filterLang('all')">All</button>
+    <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="en" onclick="filterLang('en')">English</button>
+  </div>
+</div>
+
+<style>
+.lang-filter-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.25rem;
+}
+.lang-filter-bar .lang-btn {
+  min-width: 72px;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+.lang-filter-bar .lang-btn.active {
+  background-color: var(--link-col, #008AFF);
+  border-color: var(--link-col, #008AFF);
+  color: #fff;
+}
+</style>

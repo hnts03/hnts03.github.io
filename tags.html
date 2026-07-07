@@ -5,6 +5,8 @@ title: 'Tag Index'
 
 {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
 
+{% include lang-filter.html %}
+
 {%- capture site_tags -%}
     {%- for tag in site.tags -%}
         {{- tag | first -}}{%- unless forloop.last -%},{%- endunless -%}
@@ -12,19 +14,21 @@ title: 'Tag Index'
 {%- endcapture -%}
 {%- assign tags_list = site_tags | split:',' | sort -%}
 
+<div id="tag-buttons">
 {%- for tag in tags_list -%}
-    <a href="#{{- tag -}}" class="btn btn-primary tag-btn"><i class="fas fa-tag" aria-hidden="true"></i>&nbsp;{{- tag -}}&nbsp;({{site.tags[tag].size}})</a>
+    <a href="#{{- tag -}}" class="btn btn-primary tag-btn"><i class="fas fa-tag" aria-hidden="true"></i>&nbsp;{{- tag -}}&nbsp;(<span class="tag-count">{{site.tags[tag].size}}</span>)</a>
 {%- endfor -%}
+</div>
 
 <div id="full-tags-list">
 {%- for tag in tags_list -%}
     <h2 id="{{- tag -}}" class="linked-section">
         <i class="fas fa-tag" aria-hidden="true"></i>
-        &nbsp;{{- tag -}}&nbsp;({{site.tags[tag].size}})
+        &nbsp;{{- tag -}}&nbsp;(<span class="tag-count">{{site.tags[tag].size}}</span>)
     </h2>
     <div class="post-list">
         {%- for post in site.tags[tag] -%}
-            <div class="tag-entry">
+            <div class="tag-entry" data-lang="{{ post.lang | default: '' }}">
                 <a href="{{ post.url | relative_url }}">{{- post.title | strip_html -}}</a>
                 <div class="entry-date">
                     <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: date_format -}}</time>
@@ -34,3 +38,51 @@ title: 'Tag Index'
     </div>
 {%- endfor -%}
 </div>
+
+<script>
+(function () {
+  function filterLang(lang) {
+    document.querySelectorAll('.lang-filter-bar .lang-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    document.querySelectorAll('.tag-entry').forEach(function (entry) {
+      var postLang = entry.dataset.lang;
+      entry.style.display = (lang === 'all' || postLang === lang || postLang === '') ? '' : 'none';
+    });
+
+    document.querySelectorAll('#full-tags-list h2').forEach(function (heading) {
+      var tagId = heading.id;
+      var postList = heading.nextElementSibling;
+      var visible = 0;
+      postList.querySelectorAll('.tag-entry').forEach(function (e) {
+        if (e.style.display !== 'none') visible++;
+      });
+
+      var hide = visible === 0;
+      heading.style.display = hide ? 'none' : '';
+      postList.style.display = hide ? 'none' : '';
+
+      var headCount = heading.querySelector('.tag-count');
+      if (headCount) headCount.textContent = visible;
+
+      var tagBtn = document.querySelector('#tag-buttons a[href="#' + CSS.escape(tagId) + '"]');
+      if (tagBtn) {
+        tagBtn.style.display = hide ? 'none' : '';
+        var btnCount = tagBtn.querySelector('.tag-count');
+        if (btnCount) btnCount.textContent = visible;
+      }
+    });
+
+    try { localStorage.setItem('blog-lang', lang); } catch (e) {}
+  }
+
+  window.filterLang = filterLang;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var saved = '';
+    try { saved = localStorage.getItem('blog-lang'); } catch (e) {}
+    filterLang(saved || 'kr');
+  });
+})();
+</script>
