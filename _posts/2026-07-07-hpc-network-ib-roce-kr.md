@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "InfiniBand와 RoCE — GPU 클러스터 고속 네트워크의 기반"
+title: "InfiniBand와 RoCE: GPU 클러스터 고속 네트워크의 기반"
 subtitle: "RDMA 원리, Verbs API, Lossless Ethernet, DCQCN, GPUDirect RDMA"
 tags: [Network, InfiniBand, RoCE, RDMA, HPC, NCCL, GPU-Cluster]
 lang: kr
@@ -106,7 +106,7 @@ InfiniBand는 전용 패브릭이다. **Subnet Manager**가 클러스터의 모�
 
 ---
 
-## RoCE — Ethernet 위의 RDMA
+## RoCE: Ethernet 위의 RDMA
 
 **RoCE**(RDMA over Converged Ethernet)는 InfiniBand 전송 계층을 Ethernet 위에서 동작하도록 이식한 표준이다. libibverbs Verbs API는 동일하게 사용한다.
 
@@ -141,7 +141,7 @@ RDMA 트래픽을 TC(Traffic Class) 3으로 분리하면, 혼잡 시 RDMA 트래
 
 PFC의 구조적 문제는 **HOL(Head-of-Line) Blocking**이다. 같은 TC 내 비혼잡 플로우까지 함께 정지된다. 드물게는 여러 스위치에서 PAUSE가 순환하며 fabric collapse(PFC Pause Storm)로 이어진다.
 
-### DCQCN — 혼잡 제어
+### DCQCN: 혼잡 제어
 
 PFC는 최후 수단이다. 실제 혼잡 제어는 **DCQCN**(Data Center Quantized Congestion Notification)이 담당한다 (Zhu et al., SIGCOMM 2015).
 
@@ -207,11 +207,11 @@ NCCL에서 GPUDirect RDMA 수준은 `NCCL_NET_GDR_LEVEL`로 제어한다:
 | | InfiniBand (NDR) | RoCE v2 | iWARP | TCP/IP |
 |:---|:---:|:---:|:---:|:---:|
 | 앱 레이턴시 | **1~2μs** | 5~7μs | >3μs | 50μs+ |
-| 스위치 레이턴시 | **130ns** | 230ns | — | 높음 |
-| 최대 대역폭 | **400Gbps** | 400Gbps | 낮음 | — |
+| 스위치 레이턴시 | **130ns** | 230ns | - | 높음 |
+| 최대 대역폭 | **400Gbps** | 400Gbps | 낮음 | - |
 | Lossless | 하드웨어 내장 | PFC+ECN 구성 필요 | TCP 재전송 | 없음 |
 | 인프라 비용 | 높음 | **낮음 (Ethernet 공용)** | 낮음 | 최저 |
-| 스위치 비용 | 기준 | **IB 대비 49~70% 절감** | — | — |
+| 스위치 비용 | 기준 | **IB 대비 49~70% 절감** | - | - |
 
 **InfiniBand를 선택하는 경우**: μs 단위 꼬리 레이턴시가 직접적 비용인 타이트한 HPC 결합 시뮬레이션, 또는 NVIDIA DGX/Base Command 생태계 구성 시.
 

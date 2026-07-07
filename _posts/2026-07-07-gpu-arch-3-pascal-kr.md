@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "GPU 아키텍처 #3: Pascal — 16nm, HBM2, NVLink"
+title: "GPU 아키텍처 #3: Pascal - 16nm, HBM2, NVLink"
 subtitle: "FinFET 공정 전환, GP100 SM 재설계, Unified Memory의 도약"
 tags: [GPU, Architecture, CUDA, NVIDIA, Pascal, Computer-Architecture]
 lang: kr
@@ -13,18 +13,18 @@ mathjax: false
 
 | # | 주제 |
 |:--:|:---|
-| 1 | [GPU의 기원과 SIMT의 탄생 — Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-kr/) |
-| 2 | [Kepler과 Maxwell — 효율의 추구](/2026-07-06-gpu-arch-2-kepler-maxwell-kr/) |
-| **3** | **Pascal — 16nm FinFET과 NVLink의 등장** |
-| 4 | Volta와 Ampere — Tensor Core와 딥러닝 전용 가속 |
+| 1 | [GPU의 기원과 SIMT의 탄생 - Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-kr/) |
+| 2 | [Kepler과 Maxwell - 효율의 추구](/2026-07-06-gpu-arch-2-kepler-maxwell-kr/) |
+| **3** | **Pascal - 16nm FinFET과 NVLink의 등장** |
+| 4 | Volta와 Ampere - Tensor Core와 딥러닝 전용 가속 |
 | 5 | GPU 메모리 시스템과 최적화 |
-| 6 | GPU 내부 구조 — 파이프라인과 실행 유닛 |
+| 6 | GPU 내부 구조 - 파이프라인과 실행 유닛 |
 
 ---
 
 ## Maxwell이 남긴 과제
 
-28nm 공정 위에서 Maxwell은 Kepler 대비 코어당 성능을 40% 끌어올렸다. 하지만 28nm 자체의 물리적 한계는 넘을 수 없었다. GM200의 다이 면적은 601mm², TDP 250W — 더 이상 코어를 늘려도 성능이 비례하지 않는 지점이었다.
+28nm 공정 위에서 Maxwell은 Kepler 대비 코어당 성능을 40% 끌어올렸다. 하지만 28nm 자체의 물리적 한계는 넘을 수 없었다. GM200의 다이 면적은 601mm², TDP 250W. 더 이상 코어를 늘려도 성능이 비례하지 않는 지점이었다.
 
 두 번째 한계는 메모리 대역폭이었다. Maxwell Titan X의 대역폭은 336 GB/s, PCIe 3.0 x16의 양방향 대역폭은 약 31 GB/s. 멀티 GPU 워크로드에서 GPU 간 데이터 교환은 이 병목을 통과해야 했다.
 
@@ -70,15 +70,15 @@ GP100 SM (64 FP32 + 32 FP64)
 └──────────────────────────────────────────┘
 ```
 
-스케줄러당 FP32 코어 비율은 32:1 — Maxwell Quadrant와 동일하다. 핵심 변화는 **FP64 코어 비율**이다. GM200은 FP32의 1/32(4 FP64/SM)였으나 GP100은 FP32의 1/2(32 FP64/SM)다. HPC 과학 계산의 FP64 요구를 직접 겨냥한 설계 선택이다.
+스케줄러당 FP32 코어 비율은 32:1로, Maxwell Quadrant와 동일하다. 핵심 변화는 **FP64 코어 비율**이다. GM200은 FP32의 1/32(4 FP64/SM)였으나 GP100은 FP32의 1/2(32 FP64/SM)다. HPC 과학 계산의 FP64 요구를 직접 겨냥한 설계 선택이다.
 
-GP102/GP104는 Maxwell SMM의 4 Quadrant 128코어 구조를 그대로 유지했다. FP64 코어는 4개/SM(32:1) — 소비자 GPU로서의 성격에 맞게 FP64 성능을 제한했다.
+GP102/GP104는 Maxwell SMM의 4 Quadrant 128코어 구조를 그대로 유지했다. FP64 코어는 4개/SM(32:1). 소비자 GPU로서의 성격에 맞게 FP64 성능을 제한했다.
 
 ![SM 구조 비교: Maxwell → Pascal](/assets/img/posts/gpu-arch-3/sm-compare.png)
 
 ---
 
-## HBM2와 NVLink — 대역폭의 재정의
+## HBM2와 NVLink: 대역폭의 재정의
 
 ### HBM2 (GP100 전용)
 
@@ -104,8 +104,8 @@ Maxwell GM200(336 GB/s) 대비 2.2배, GP104 GDDR5X(320 GB/s) 대비 2.3배다.
 
 | | PCIe 3.0 x16 | NVLink 1.0 (GP100) |
 |:---|:---:|:---:|
-| 링크 수 | — | 4 |
-| 링크당 대역폭 | — | 20 GB/s 양방향 |
+| 링크 수 | - | 4 |
+| 링크당 대역폭 | - | 20 GB/s 양방향 |
 | 총 대역폭 | **~31 GB/s** | **160 GB/s** |
 | PCIe 대비 | 1× | **약 5×** |
 
@@ -113,7 +113,7 @@ Maxwell GM200(336 GB/s) 대비 2.2배, GP104 GDDR5X(320 GB/s) 대비 2.3배다.
 
 ---
 
-## FP16 — 딥러닝 가속의 발판
+## FP16: 딥러닝 가속의 발판
 
 GP100은 `half2` 벡터 타입으로 하나의 32-bit 레지스터에 FP16 값 2개를 패킹하고, 한 클록에 2개를 동시 처리한다.
 
@@ -130,7 +130,7 @@ __global__ void fp16_fma(half2 *a, half2 *b, half2 *c, half2 *d) {
 }
 ```
 
-GP102/GP104(CC 6.1)의 FP16 처리량은 FP32의 **1/64** — 소프트웨어 에뮬레이션 수준이다. 반면 INT8 dot product(`__dp4a`)는 CC 6.1 전체에서 FP32와 동등한 처리량을 제공한다.
+GP102/GP104(CC 6.1)의 FP16 처리량은 FP32의 **1/64**로, 소프트웨어 에뮬레이션 수준이다. 반면 INT8 dot product(`__dp4a`)는 CC 6.1 전체에서 FP32와 동등한 처리량을 제공한다.
 
 GP100의 native FP16은 2017년 Volta Tensor Core가 등장하기 전까지 혼합 정밀도 학습의 유일한 하드웨어 기반이었다.
 
@@ -163,7 +163,7 @@ CPU 동시 접근:  불가              →   가능
 CUDA 8.0은 두 가지 API를 추가했다.
 
 ```cuda
-// 비동기 prefetch — 컴퓨트 스트림과 overlap 가능
+// 비동기 prefetch - 컴퓨트 스트림과 overlap 가능
 cudaMemPrefetchAsync(data, size, device_id, stream);
 
 // 메모리 접근 패턴 힌트
@@ -198,7 +198,7 @@ Pascal(CC 6.x, GP100/GP102/GP104 전체)은 **instruction-level preemption**을 
 
 Pascal은 두 갈래로 분기했다. GP100은 HBM2, NVLink, native FP16, FP64를 갖춘 HPC/AI 전용 가속기다. GP102/GP104는 Maxwell의 Quadrant 구조를 계승해 소비자 시장을 겨냥했다.
 
-다음 포스트에서는 Volta를 다룬다 — Tensor Core의 등장, NVLink 2.0, 그리고 현대 AI 가속기 설계의 기반이 완성되는 과정이다.
+다음 포스트에서는 Volta를 다룬다: Tensor Core의 등장, NVLink 2.0, 그리고 현대 AI 가속기 설계의 기반이 완성되는 과정이다.
 
 ---
 

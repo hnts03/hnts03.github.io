@@ -13,7 +13,7 @@ mathjax: false
 
 | # | 주제 | 상태 |
 |:--:|:---|:---:|
-| 0 | [개요 및 비교 — vLLM, SGLang, TensorRT-LLM](/2026-06-19-llm-serving-overview-kr/) | ✅ |
+| 0 | [개요 및 비교 - vLLM, SGLang, TensorRT-LLM](/2026-06-19-llm-serving-overview-kr/) | ✅ |
 | **1** | **vLLM 심층 분석** | |
 | 2 | SGLang 심층 분석 | |
 | 3 | TensorRT-LLM 심층 분석 | |
@@ -252,7 +252,7 @@ vllm serve deepseek-ai/DeepSeek-V2 \
 
 ---
 
-다음 글에서는 SGLang의 내부 구조 — RadixAttention 구현과 CUDA Graph 최적화 — 를 다룹니다.
+다음 글에서는 SGLang의 내부 구조를 다룹니다: RadixAttention 구현과 CUDA Graph 최적화.
 
 ---
 

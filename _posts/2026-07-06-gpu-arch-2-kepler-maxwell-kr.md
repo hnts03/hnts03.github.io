@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "GPU 아키텍처 #2: Kepler와 Maxwell — 효율성의 탐구"
+title: "GPU 아키텍처 #2: Kepler와 Maxwell - 효율성의 탐구"
 subtitle: "192코어 SMX의 실험, Quadrant 설계로의 수렴, 그리고 스케줄링의 진화"
 tags: [GPU, Architecture, CUDA, NVIDIA, Kepler, Maxwell, Computer-Architecture]
 lang: kr
@@ -13,15 +13,15 @@ mathjax: false
 
 | # | 주제 |
 |:--:|:---|
-| 1 | [GPU의 출발과 SIMT의 탄생 — Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-kr/) |
-| **2** | **Kepler와 Maxwell — 효율성의 탐구** |
-| 3 | Pascal, Volta, Ampere — 컴퓨팅 중심으로 |
+| 1 | [GPU의 출발과 SIMT의 탄생 - Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-kr/) |
+| **2** | **Kepler와 Maxwell - 효율성의 탐구** |
+| 3 | Pascal, Volta, Ampere - 컴퓨팅 중심으로 |
 | 4 | GPU 메모리 시스템과 최적화 |
-| 5 | GPU 내부 해부 — 파이프라인과 실행 유닛 |
+| 5 | GPU 내부 해부 - 파이프라인과 실행 유닛 |
 
 ---
 
-## 1. Fermi의 한계 — 다음 세대의 출발점
+## 1. Fermi의 한계: 다음 세대의 출발점
 
 Fermi(GF100, 2010)는 L1/L2 캐시 도입, ECC 지원, Dual Warp Scheduler 등으로 GPU를 진정한 컴퓨팅 플랫폼으로 완성했습니다. 그러나 40nm 공정에서 뽑아낼 수 있는 성능과 전력 효율은 한계에 다다랐습니다.
 
@@ -35,7 +35,7 @@ NVIDIA는 28nm 공정으로의 전환과 함께 두 세대에 걸쳐 이 문제�
 
 ---
 
-## 2. Kepler — 규모의 도전 (2012)
+## 2. Kepler: 규모의 도전 (2012)
 
 ### SMX: 192코어를 선택한 이유
 
@@ -71,7 +71,7 @@ SMX는 Warp Scheduler를 4개로 늘리고 각 스케줄러에 **IDU(Instruction
 
 ### Dynamic Parallelism
 
-Fermi까지는 GPU 커널이 완료되면 제어권이 CPU로 돌아와야 다음 커널을 launch할 수 있었습니다. 계층적인 연산 — 예를 들어 병렬 BVH(Bounding Volume Hierarchy) 탐색처럼 데이터에 따라 하위 작업이 동적으로 생성되는 경우 — 에서는 CPU와 GPU 사이의 왕복 비용이 병목이었습니다.
+Fermi까지는 GPU 커널이 완료되면 제어권이 CPU로 돌아와야 다음 커널을 launch할 수 있었습니다. 계층적인 연산 - 예를 들어 병렬 BVH(Bounding Volume Hierarchy) 탐색처럼 데이터에 따라 하위 작업이 동적으로 생성되는 경우 - 에서는 CPU와 GPU 사이의 왕복 비용이 병목이었습니다.
 
 GK110(Compute Capability 3.5)에서 도입된 **Dynamic Parallelism**은 커널이 CPU 개입 없이 GPU에서 직접 새 커널을 launch하는 기능입니다.
 
@@ -114,7 +114,7 @@ Warp 내 스레드 간 데이터를 교환하려면 기존에는 Shared Memory�
 CC 3.0부터 지원되는 **Warp Shuffle 명령어**(`__shfl_sync()`)는 레지스터 간 직접 교환을 허용합니다. Shared Memory 접근 없이 warp reduction을 구현할 수 있습니다.
 
 ```cuda
-// warp 내 합산 — Shared Memory 없이
+// warp 내 합산 - Shared Memory 없이
 int val = threadIdx.x;
 for (int offset = 16; offset > 0; offset >>= 1)
     val += __shfl_down_sync(0xffffffff, val, offset);
@@ -123,7 +123,7 @@ for (int offset = 16; offset > 0; offset >>= 1)
 
 ---
 
-## 4. Maxwell — 설계의 정제 (2014)
+## 4. Maxwell: 설계의 정제 (2014)
 
 ### 192코어 SMX의 문제
 
@@ -200,7 +200,7 @@ cudaMemcpy(h_data, d_data, size, cudaMemcpyDeviceToHost);
 float *data;
 cudaMallocManaged(&data, size);
 init_on_cpu(data);           // CPU에서 초기화
-kernel<<<grid, block>>>(data); // GPU에서 사용 — 자동 마이그레이션
+kernel<<<grid, block>>>(data); // GPU에서 사용 - 자동 마이그레이션
 result = data[0];            // CPU에서 결과 읽기
 ```
 
@@ -250,7 +250,7 @@ TLP로 latency 은닉      클럭당 최대 8 이슈        → 32코어 전용
 | SM 내부 구조 | Monolithic | 4 Quadrant |
 | Warp Scheduler / SM | 4 (각 2 IDU) | 4 (각 전용 32코어) |
 | 코어 / Scheduler | 48 | **32** |
-| DP Unit / SM | 64 | — (GM204 소비자향) |
+| DP Unit / SM | 64 | - (GM204 소비자향) |
 | Shared Memory | 64KB (L1 공유) | 96KB (전용) |
 | 대표 기능 | Dynamic Parallelism, Hyper-Q, Warp Shuffle | Unified Memory, Quadrant 설계 |
 | 공정 | 28nm | 28nm |

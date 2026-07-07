@@ -13,10 +13,10 @@ mathjax: true
 
 | # | 주제 |
 |:--:|:---|
-| **1** | **GPU의 출발과 SIMT의 탄생 — Tesla, Fermi** |
-| 2 | GPU 아키텍처의 진화 — Kepler에서 Blackwell까지 |
+| **1** | **GPU의 출발과 SIMT의 탄생 - Tesla, Fermi** |
+| 2 | GPU 아키텍처의 진화 - Kepler에서 Blackwell까지 |
 | 3 | GPU 메모리 시스템과 최적화 |
-| 4 | GPU 내부 해부 — Instruction/Memory/Compute 파이프라인 |
+| 4 | GPU 내부 해부 - Instruction/Memory/Compute 파이프라인 |
 | 5 | CUDA 커널 최적화 |
 
 ---
@@ -33,7 +33,7 @@ GPU는 원래 화면에 픽셀을 빠르게 그리기 위한 장치였습니다.
 
 ---
 
-## 2. Tesla 아키텍처 — GPGPU의 첫 발
+## 2. Tesla 아키텍처: GPGPU의 첫 발
 
 ### 통합 셰이더 아키텍처의 등장
 
@@ -68,7 +68,7 @@ CUDA 이전의 GPGPU는 셰이더 언어(GLSL, HLSL)를 우회하는 방식이�
 
 ---
 
-## 3. SIMT — Single Instruction, Multiple Threads
+## 3. SIMT: Single Instruction, Multiple Threads
 
 Tesla 아키텍처에서 NVIDIA가 제안한 핵심 실행 모델이 **SIMT**입니다.
 
@@ -85,7 +85,7 @@ CPU의 SIMD(Single Instruction, Multiple Data)와 이름이 유사하지만 실�
 
 SIMT의 핵심은 다음과 같습니다. **프로그래머는 스칼라 코드를 작성하고, 하드웨어가 스레드들을 묶어 병렬로 실행합니다.** 덕분에 GPU 프로그래밍의 진입 장벽이 크게 낮아졌습니다.
 
-### Warp — 실행의 기본 단위
+### Warp: 실행의 기본 단위
 
 SIMT에서 실제 병렬 실행의 단위는 **Warp**입니다. Warp는 32개의 스레드 묶음으로, 매 사이클에 동일한 명령어를 함께 실행합니다.
 
@@ -123,7 +123,7 @@ Cycle N~M:  [T1 T3 T5 ... T31] 활성화 → doB() 실행
 
 ---
 
-## 4. SM — Streaming Multiprocessor
+## 4. SM: Streaming Multiprocessor
 
 SM은 GPU의 핵심 연산 블록입니다. Tesla(G80) SM의 구성은 다음과 같습니다.
 
@@ -143,7 +143,7 @@ Tesla SM (G80)
 
 ---
 
-## 5. Fermi 아키텍처 — GPU 컴퓨팅의 완성
+## 5. Fermi 아키텍처: GPU 컴퓨팅의 완성
 
 Tesla가 GPGPU의 문을 열었다면, **Fermi(GF100, 2010)** 는 GPU를 진정한 컴퓨팅 플랫폼으로 완성한 아키텍처입니다.
 
@@ -151,7 +151,7 @@ Tesla가 GPGPU의 문을 열었다면, **Fermi(GF100, 2010)** 는 GPU를 진정�
 
 ```
 Fermi SM
-├── 32× CUDA Core (FP32/INT32 ALU) — Tesla 대비 4배
+├── 32× CUDA Core (FP32/INT32 ALU) - Tesla 대비 4배
 ├── 4× SFU
 ├── 16× Load/Store Unit
 ├── 2× Warp Scheduler (Dual-Issue 지원)

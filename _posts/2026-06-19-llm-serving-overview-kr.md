@@ -13,10 +13,10 @@ mathjax: false
 
 | # | 주제 |
 |:--:|:---|
-| **0** | **개요 및 비교 — vLLM, SGLang, TensorRT-LLM** |
-| 1 | vLLM 심층 분석 — PagedAttention과 스케줄링 |
-| 2 | SGLang 심층 분석 — RadixAttention과 구조화 생성 |
-| 3 | TensorRT-LLM 심층 분석 — 컴파일 최적화와 배포 |
+| **0** | **개요 및 비교 - vLLM, SGLang, TensorRT-LLM** |
+| 1 | vLLM 심층 분석 - PagedAttention과 스케줄링 |
+| 2 | SGLang 심층 분석 - RadixAttention과 구조화 생성 |
+| 3 | TensorRT-LLM 심층 분석 - 컴파일 최적화와 배포 |
 
 ---
 
@@ -149,7 +149,7 @@ NVIDIA의 Continuous Batching 구현으로, Triton Inference Server와 통합됩
 
 ---
 
-다음 글에서는 vLLM의 내부 구조 — PagedAttention 구현 방식과 스케줄러 설계 — 를 상세히 다룹니다.
+다음 글에서는 vLLM의 내부 구조를 상세히 다룹니다: PagedAttention 구현 방식과 스케줄러 설계.
 
 ---
 
