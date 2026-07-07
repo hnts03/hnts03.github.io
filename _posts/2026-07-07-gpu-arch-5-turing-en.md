@@ -18,7 +18,8 @@ mathjax: false
 | 3 | [Pascal — 16nm, HBM2, NVLink](/2026-07-07-gpu-arch-3-pascal-en/) |
 | 4 | [Volta — Tensor Cores and Independent Thread Scheduling](/2026-07-07-gpu-arch-4-volta-en/) |
 | **5** | **Turing — RT Cores and 2nd-Gen Tensor Cores** |
-| 6 | GPU Memory Systems and Optimization |
+| 6 | [Ampere — Sparsity Acceleration and MIG](/2026-07-07-gpu-arch-6-ampere-en/) |
+| 7 | GPU Memory Systems and Optimization |
 
 ---
 

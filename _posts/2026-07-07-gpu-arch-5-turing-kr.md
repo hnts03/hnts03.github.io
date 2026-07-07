@@ -18,7 +18,8 @@ mathjax: false
 | 3 | [Pascal - 16nm, HBM2, NVLink](/2026-07-07-gpu-arch-3-pascal-kr/) |
 | 4 | [Volta - Tensor Core와 독립 스레드 스케줄링](/2026-07-07-gpu-arch-4-volta-kr/) |
 | **5** | **Turing - RT Core와 2세대 Tensor Core** |
-| 6 | GPU 메모리 시스템과 최적화 |
+| 6 | [Ampere - Sparsity 가속과 MIG](/2026-07-07-gpu-arch-6-ampere-kr/) |
+| 7 | GPU 메모리 시스템과 최적화 |
 
 ---
 
