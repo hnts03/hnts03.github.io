@@ -16,7 +16,7 @@ mathjax: false
 | 1 | [GPU의 기원과 SIMT의 탄생 - Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-kr/) |
 | 2 | [Kepler과 Maxwell - 효율의 추구](/2026-07-06-gpu-arch-2-kepler-maxwell-kr/) |
 | **3** | **Pascal - 16nm FinFET과 NVLink의 등장** |
-| 4 | Volta와 Ampere - Tensor Core와 딥러닝 전용 가속 |
+| 4 | [Volta - Tensor Core와 독립 스레드 스케줄링](/2026-07-07-gpu-arch-4-volta-kr/) |
 | 5 | GPU 메모리 시스템과 최적화 |
 | 6 | GPU 내부 구조 - 파이프라인과 실행 유닛 |
 

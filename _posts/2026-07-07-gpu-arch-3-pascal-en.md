@@ -16,7 +16,7 @@ mathjax: false
 | 1 | [The Origins of GPU and the Birth of SIMT — Tesla, Fermi](/2026-04-12-gpu-arch-1-tesla-fermi-en/) |
 | 2 | [Kepler and Maxwell — The Pursuit of Efficiency](/2026-07-06-gpu-arch-2-kepler-maxwell-en/) |
 | **3** | **Pascal — 16nm FinFET and the Arrival of NVLink** |
-| 4 | Volta and Ampere — Tensor Cores and Deep Learning Acceleration |
+| 4 | [Volta — Tensor Cores and Independent Thread Scheduling](/2026-07-07-gpu-arch-4-volta-en/) |
 | 5 | GPU Memory Systems and Optimization |
 | 6 | GPU Internals — Pipelines and Execution Units |
 
