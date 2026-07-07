@@ -22,26 +22,24 @@ author: HNTS03
 # GW: This section makes navibar which shown at top-right corner of homepage.
 navbar-links:
   About Me: "aboutme"
-  Resources:
-#    - Beautiful Jekyll: "https://beautifuljekyll.com"
-#    - Learn markdown: "https://www.markdowntutorial.com/"
-#  Author's home: "https://deanattali.com"
+  Tags: "tags"
   Computer Science:
     - Hardware:
-      - Computer Architecture: ""
-      - GPU Architecture: ""
-      - RTL: ""
+      - Computer Architecture: "tags#Computer-Architecture"
+      - GPU Architecture: "tags#GPU"
+      - RTL: "tags#RTL"
     - Software:
-      - C / C++: ""
-      - Python: ""
-      - CUDA / NVIDIA GPU: ""
-      - ROCm / AMD GPU: ""
-      - Metal / Apple Silicon GPU: ""
-      - SYCL / INTEL GPU: ""
-    - HPC:
-      - AI: ""
-      - Simulation: ""
-    - Project:
+      - C / C++: "tags#C"
+      - Python: "tags#Python"
+      - CUDA / NVIDIA GPU: "tags#CUDA"
+      - ROCm / AMD GPU: "tags#ROCm"
+      - Metal / Apple Silicon: "tags#Metal"
+      - SYCL / Intel GPU: "tags#SYCL"
+    - Systems:
+      - AI / LLM: "tags#AI"
+      - HPC / Network: "tags#HPC"
+      - Simulation: "tags#Simulation"
+    - Project: "tags#Project"
 
 
 ################
