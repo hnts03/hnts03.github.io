@@ -17,8 +17,8 @@ mathjax: false
 | 2 | [Kepler와 Maxwell - 효율성의 탐구](/2026-07-06-gpu-arch-2-kepler-maxwell-kr/) |
 | 3 | [Pascal - 16nm, HBM2, NVLink](/2026-07-07-gpu-arch-3-pascal-kr/) |
 | **4** | **Volta - Tensor Core와 독립 스레드 스케줄링** |
-| 5 | GPU 메모리 시스템과 최적화 |
-| 6 | GPU 내부 구조 - 파이프라인과 실행 유닛 |
+| 5 | [Turing - RT Core와 2세대 Tensor Core](/2026-07-07-gpu-arch-5-turing-kr/) |
+| 6 | GPU 메모리 시스템과 최적화 |
 
 ---
 

@@ -17,8 +17,8 @@ mathjax: false
 | 2 | [Kepler and Maxwell — The Pursuit of Efficiency](/2026-07-06-gpu-arch-2-kepler-maxwell-en/) |
 | 3 | [Pascal — 16nm, HBM2, NVLink](/2026-07-07-gpu-arch-3-pascal-en/) |
 | **4** | **Volta — Tensor Cores and Independent Thread Scheduling** |
-| 5 | GPU Memory Systems and Optimization |
-| 6 | GPU Internals — Pipelines and Execution Units |
+| 5 | [Turing — RT Cores and 2nd-Gen Tensor Cores](/2026-07-07-gpu-arch-5-turing-en/) |
+| 6 | GPU Memory Systems and Optimization |
 
 ---
 
