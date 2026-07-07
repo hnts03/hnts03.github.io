@@ -80,9 +80,7 @@ title: 'Tag Index'
   window.filterLang = filterLang;
 
   document.addEventListener('DOMContentLoaded', function () {
-    var saved = '';
-    try { saved = localStorage.getItem('blog-lang'); } catch (e) {}
-    filterLang(saved || 'kr');
+    filterLang(window.getBlogLang ? window.getBlogLang() : 'en');
   });
 })();
 </script>

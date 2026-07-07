@@ -1,0 +1,119 @@
+---
+layout: page
+title: " "
+---
+
+<div class="category-page-header">
+  <h2 id="category-title" class="category-title"></h2>
+</div>
+
+{% include lang-filter.html %}
+
+<ul class="posts-list list-unstyled" id="category-post-list" role="list">
+  {% for post in site.posts %}
+  <li class="post-preview"
+      data-lang="{{ post.lang | default: '' }}"
+      data-tags="{{ post.tags | join: ',' }}">
+    <article>
+      <a href="{{ post.url | absolute_url }}">
+        <h2 class="post-title">{{ post.title | strip_html }}</h2>
+        {% if post.subtitle %}
+          <h3 class="post-subtitle">{{ post.subtitle | strip_html }}</h3>
+        {% endif %}
+      </a>
+      <p class="post-meta">
+        {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
+        Posted on {{ post.date | date: date_format }}
+      </p>
+      <div class="post-entry">
+        {% assign excerpt_length = site.excerpt_length | default: 50 %}
+        {{ post.excerpt | strip_html | truncatewords: excerpt_length }}
+        {% assign excerpt_word_count = post.excerpt | number_of_words %}
+        {% if post.content != post.excerpt or excerpt_word_count > excerpt_length %}
+          <a href="{{ post.url | absolute_url }}" class="post-read-more">[Read&nbsp;More]</a>
+        {% endif %}
+      </div>
+      {% if post.tags.size > 0 %}
+      <div class="blog-tags">
+        <span>Tags:</span>
+        <ul class="d-inline list-inline" role="list">
+          {% for tag in post.tags %}
+          <li class="list-inline-item">
+            <a href="{{ '/tags' | absolute_url }}#{{- tag -}}">{{- tag -}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </article>
+  </li>
+  {% endfor %}
+</ul>
+
+<p id="category-empty" style="display:none; color: #888;">No posts found in this category.</p>
+
+<style>
+.category-page-header {
+  margin-bottom: 0.5rem;
+}
+.category-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text-col, #404040);
+  border-bottom: 2px solid var(--link-col, #008AFF);
+  padding-bottom: 0.4rem;
+  display: inline-block;
+}
+</style>
+
+<script>
+(function () {
+  var currentTag = '';
+
+  function getTagFromHash() {
+    return decodeURIComponent(window.location.hash.slice(1));
+  }
+
+  function applyFilters(lang) {
+    var anyVisible = false;
+    document.querySelectorAll('#category-post-list .post-preview').forEach(function (item) {
+      var tags = item.dataset.tags ? item.dataset.tags.split(',') : [];
+      var postLang = item.dataset.lang || '';
+      var tagMatch = !currentTag || tags.indexOf(currentTag) !== -1;
+      var langMatch = lang === 'all' || postLang === lang || postLang === '';
+      var show = tagMatch && langMatch;
+      item.style.display = show ? '' : 'none';
+      if (show) anyVisible = true;
+    });
+    var empty = document.getElementById('category-empty');
+    if (empty) empty.style.display = anyVisible ? 'none' : '';
+  }
+
+  function filterLang(lang) {
+    document.querySelectorAll('.lang-filter-bar .lang-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    applyFilters(lang);
+    try { localStorage.setItem('blog-lang', lang); } catch (e) {}
+  }
+
+  window.filterLang = filterLang;
+
+  window.addEventListener('hashchange', function () {
+    currentTag = getTagFromHash();
+    var activeBtn = document.querySelector('.lang-btn.active');
+    var lang = activeBtn ? activeBtn.dataset.lang : (window.getBlogLang ? window.getBlogLang() : 'en');
+    var titleEl = document.getElementById('category-title');
+    if (titleEl) titleEl.textContent = currentTag || '';
+    applyFilters(lang);
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    currentTag = getTagFromHash();
+    var titleEl = document.getElementById('category-title');
+    if (titleEl) titleEl.textContent = currentTag || '';
+    var lang = window.getBlogLang ? window.getBlogLang() : 'en';
+    filterLang(lang);
+  });
+})();
+</script>

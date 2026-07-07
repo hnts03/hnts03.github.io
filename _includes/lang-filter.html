@@ -23,3 +23,13 @@
   color: #fff;
 }
 </style>
+
+<script>
+window.getBlogLang = function () {
+  var saved = '';
+  try { saved = localStorage.getItem('blog-lang'); } catch (e) {}
+  if (saved) return saved;
+  var sys = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  return sys.startsWith('ko') ? 'kr' : 'en';
+};
+</script>

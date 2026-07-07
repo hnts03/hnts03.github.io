@@ -24,22 +24,19 @@ navbar-links:
   About Me: "aboutme"
   Tags: "tags"
   Computer Science:
-    - Hardware:
-      - Computer Architecture: "tags#Computer-Architecture"
-      - GPU Architecture: "tags#GPU"
-      - RTL: "tags#RTL"
-    - Software:
-      - C / C++: "tags#C"
-      - Python: "tags#Python"
-      - CUDA / NVIDIA GPU: "tags#CUDA"
-      - ROCm / AMD GPU: "tags#ROCm"
-      - Metal / Apple Silicon: "tags#Metal"
-      - SYCL / Intel GPU: "tags#SYCL"
-    - Systems:
-      - AI / LLM: "tags#AI"
-      - HPC / Network: "tags#HPC"
-      - Simulation: "tags#Simulation"
-    - Project: "tags#Project"
+    - Computer Architecture: "category#Computer-Architecture"
+    - GPU Architecture: "category#GPU"
+    - RTL: "category#RTL"
+    - C / C++: "category#C"
+    - Python: "category#Python"
+    - CUDA / NVIDIA GPU: "category#CUDA"
+    - ROCm / AMD GPU: "category#ROCm"
+    - Metal / Apple Silicon: "category#Metal"
+    - SYCL / Intel GPU: "category#SYCL"
+    - AI / LLM: "category#AI"
+    - HPC / Network: "category#HPC"
+    - Simulation: "category#Simulation"
+    - Project: "category#Project"
 
 
 ################
