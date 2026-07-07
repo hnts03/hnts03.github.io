@@ -1,6 +1,6 @@
 <div class="lang-filter-bar">
+  <span class="lang-filter-label">Lang:</span>
   <div class="btn-group btn-group-sm" role="group" aria-label="Language filter">
-    <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="all" onclick="filterLang('all')">All</button>
     <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="kr" onclick="filterLang('kr')">한국어</button>
     <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="en" onclick="filterLang('en')">English</button>
   </div>
@@ -9,8 +9,14 @@
 <style>
 .lang-filter-bar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 0.5rem;
   margin-bottom: 1.25rem;
+}
+.lang-filter-label {
+  font-size: 0.8rem;
+  color: #888;
 }
 .lang-filter-bar .lang-btn {
   min-width: 72px;
@@ -28,7 +34,7 @@
 window.getBlogLang = function () {
   var saved = '';
   try { saved = localStorage.getItem('blog-lang'); } catch (e) {}
-  if (saved) return saved;
+  if (saved && saved !== 'all') return saved;
   var sys = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
   return sys.startsWith('ko') ? 'kr' : 'en';
 };
