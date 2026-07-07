@@ -19,7 +19,8 @@ mathjax: false
 | 4 | [Volta — Tensor Cores and Independent Thread Scheduling](/2026-07-07-gpu-arch-4-volta-en/) |
 | 5 | [Turing — RT Cores and 2nd-Gen Tensor Cores](/2026-07-07-gpu-arch-5-turing-en/) |
 | **6** | **Ampere — Sparsity Acceleration and MIG** |
-| 7 | GPU Memory Systems and Optimization |
+| 7 | [Hopper — Transformer Engine and FP8](/2026-07-07-gpu-arch-7-hopper-en/) |
+| 8 | GPU Memory Systems and Optimization |
 
 ---
 
@@ -237,16 +238,40 @@ DGX A100 nodes connect 8 A100s via NVLink 3.0 and NVSwitch 2.0. NVSwitch 2.0 pro
 
 A100's 2 TB/s is 2.2× V100's 900 GB/s. GDDR6X achieves its bandwidth through PAM4 (Pulse Amplitude Modulation 4-level) signaling, doubling data per clock over standard GDDR6.
 
-### L2 Cache
+### L2 Cache Partitioning
 
-| Product | L2 Cache |
-|:---|---:|
-| V100 (Volta) | 6 MB |
-| RTX 2080 Ti (Turing) | 6 MB |
-| A100 (GA100) | **40 MB** |
-| RTX 3090 (GA102) | 6 MB |
+| Product | L2 Cache | Partition Structure |
+|:---|---:|:---:|
+| V100 (Volta) | 6 MB | single |
+| RTX 2080 Ti (Turing) | 6 MB | single |
+| A100 (GA100) | **40 MB** | **2 × 20 MB (physically split)** |
+| RTX 3090 (GA102) | 6 MB | single |
 
-A100's 40 MB L2 — 6.7× V100's — keeps frequently reused data (GEMM tiles, KV cache, intermediate activations) on-chip, reducing HBM traffic.
+A100's 40 MB L2 is 6.7× V100's — but the structure changed, not just the size. The GA100 die splits the L2 into **two physically separate 20 MB partitions**, each co-located with half the SM array. SMs primarily access their local partition at low latency; cross-partition access routes through an internal crossbar and incurs additional cycles.
+
+This topology has two consequences:
+
+**Non-uniform L2 latency**: data accessed by SMs on the far side of the crossbar pays extra cycles. Algorithms with high SM-to-data locality benefit; those that scatter data randomly across all SMs see uneven cache behavior.
+
+**MIG alignment**: MIG instances are assigned to contiguous SM blocks that share a single L2 partition slice. Cross-instance L2 interference is eliminated at the hardware level — each instance's L2 allocation is physically separate.
+
+Ampere also introduced explicit L2 residency control APIs:
+
+```cuda
+// Reserve 20 MB of L2 as a persistent region
+cudaDeviceSetLimit(cudaLimitPersistingL2CacheSize, 20ULL * 1024 * 1024);
+
+// Pin a weight buffer in L2 across kernel launches
+cudaStreamAttrValue attr = {};
+attr.accessPolicyWindow.base_ptr  = (void*)weight_ptr;
+attr.accessPolicyWindow.num_bytes = weight_size;
+attr.accessPolicyWindow.hitRatio  = 1.0f;
+attr.accessPolicyWindow.hitProp   = cudaAccessPropertyPersisting;  // pin in L2
+attr.accessPolicyWindow.missProp  = cudaAccessPropertyStreaming;    // bypass on miss
+cudaStreamSetAttribute(stream, cudaStreamAttributeAccessPolicyWindow, &attr);
+```
+
+Data marked `cudaAccessPropertyPersisting` survives across kernel launch boundaries in L2. Repeatedly accessed buffers (weight matrices, embedding tables) can be pinned there to eliminate repeated HBM fetches. `cudaAccessPropertyStreaming` ensures one-time data bypasses L2 without polluting it.
 
 ---
 

@@ -19,7 +19,8 @@ mathjax: false
 | 4 | [Volta - Tensor Core와 독립 스레드 스케줄링](/2026-07-07-gpu-arch-4-volta-kr/) |
 | 5 | [Turing - RT Core와 2세대 Tensor Core](/2026-07-07-gpu-arch-5-turing-kr/) |
 | **6** | **Ampere - Sparsity 가속과 MIG** |
-| 7 | GPU 메모리 시스템과 최적화 |
+| 7 | [Hopper - Transformer Engine과 FP8](/2026-07-07-gpu-arch-7-hopper-kr/) |
+| 8 | GPU 메모리 시스템과 최적화 |
 
 ---
 
@@ -234,16 +235,36 @@ DGX A100 시스템은 8개의 A100을 NVLink 3.0 + NVSwitch 2.0으로 연결한�
 
 A100 SXM4 80GB의 2 TB/s는 V100 대비 2.2배다. GDDR6X는 PAM4 시그널링으로 동일 클록에 두 배의 데이터를 전송한다.
 
-### 확장된 L2 캐시
+### L2 캐시 파티셔닝
 
-| 제품 | L2 캐시 |
-|:---|---:|
-| V100 (Volta) | 6 MB |
-| RTX 2080 Ti (Turing) | 6 MB |
-| A100 (Ampere GA100) | **40 MB** |
-| RTX 3090 (Ampere GA102) | 6 MB |
+| 제품 | L2 캐시 | 파티션 구조 |
+|:---|---:|:---:|
+| V100 (Volta) | 6 MB | 단일 |
+| RTX 2080 Ti (Turing) | 6 MB | 단일 |
+| A100 (Ampere GA100) | **40 MB** | **2 × 20MB 분리** |
+| RTX 3090 (Ampere GA102) | 6 MB | 단일 |
 
-A100의 40MB L2는 V100 대비 6.7배다. GEMM 타일, KV Cache(추론), 중간 활성값 등 자주 재사용되는 데이터를 L2에 유지해 HBM 접근을 줄인다.
+A100의 40MB L2는 V100 대비 6.7배다. 단순히 크기만 늘어난 것이 아니다. A100 다이는 SM 배열을 기준으로 **두 개의 물리적으로 분리된 20MB L2 파티션**으로 나뉜다. 각 파티션은 인접한 절반의 SM 집합에 귀속된다. 자신의 파티션에 있는 데이터는 낮은 지연으로 접근하고, 반대편 파티션 데이터는 내부 크로스바를 경유해 접근 비용이 높아진다.
+
+이 구조가 MIG와 연결된다. MIG 인스턴스는 연속된 SM 블록과 해당 SM에 귀속된 L2 파티션 슬라이스를 함께 할당받는다. 인스턴스 간 L2 간섭이 하드웨어 수준에서 차단된다.
+
+Ampere는 L2 캐시 상주 여부를 명시적으로 제어하는 API도 함께 도입했다.
+
+```cuda
+// 영구 L2 영역 크기 설정 (예: 20MB 고정)
+cudaDeviceSetLimit(cudaLimitPersistingL2CacheSize, 20ULL * 1024 * 1024);
+
+// 특정 버퍼를 영구적으로 L2에 유지 (커널 간에도 유지됨)
+cudaStreamAttrValue attr = {};
+attr.accessPolicyWindow.base_ptr  = (void*)weight_ptr;
+attr.accessPolicyWindow.num_bytes = weight_size;
+attr.accessPolicyWindow.hitRatio  = 1.0f;
+attr.accessPolicyWindow.hitProp   = cudaAccessPropertyPersisting;  // L2에 고정
+attr.accessPolicyWindow.missProp  = cudaAccessPropertyStreaming;    // 미스 시 bypass
+cudaStreamSetAttribute(stream, cudaStreamAttributeAccessPolicyWindow, &attr);
+```
+
+`cudaAccessPropertyPersisting`으로 표시된 데이터는 커널 경계를 넘어 L2에 잔류한다. 반복적으로 접근하는 가중치 테이블이나 임베딩 테이블에 활용하면 HBM 왕복을 줄일 수 있다. `cudaAccessPropertyStreaming`은 반대로 해당 접근이 L2를 오염시키지 않도록 bypass 처리한다.
 
 ---
 
