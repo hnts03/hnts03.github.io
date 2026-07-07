@@ -20,7 +20,8 @@ mathjax: false
 | 5 | [Turing — RT Cores and 2nd-Gen Tensor Cores](/2026-07-07-gpu-arch-5-turing-en/) |
 | 6 | [Ampere — Sparsity Acceleration and MIG](/2026-07-07-gpu-arch-6-ampere-en/) |
 | **7** | **Hopper — Transformer Engine and FP8** |
-| 8 | GPU Memory Systems and Optimization |
+| 8 | [Ada Lovelace — 3rd-Gen RT Cores and 96MB L2](/2026-07-07-gpu-arch-8-ada-lovelace-en/) |
+| 9 | GPU Memory Systems and Optimization |
 
 ---
 
