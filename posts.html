@@ -1,0 +1,65 @@
+---
+layout: page
+title: 'Posts'
+---
+
+{% assign date_format = site.date_format | default: "%B %-d, %Y" %}
+
+{% include lang-filter.html %}
+
+<ul class="posts-list list-unstyled" id="posts-list" role="list">
+  {% for post in site.posts %}
+  <li class="post-preview" data-lang="{{ post.lang | default: '' }}">
+    <article>
+      <a href="{{ post.url | relative_url }}">
+        <h2 class="post-title">{{ post.title | strip_html }}</h2>
+        {% if post.subtitle %}
+          <h3 class="post-subtitle">{{ post.subtitle | strip_html }}</h3>
+        {% endif %}
+      </a>
+      <p class="post-meta">
+        Posted on {{ post.date | date: date_format }}
+      </p>
+      {% if post.tags.size > 0 %}
+      <div class="blog-tags">
+        <span>Tags:</span>
+        <ul class="d-inline list-inline" role="list">
+          {% for tag in post.tags %}
+          <li class="list-inline-item">
+            <a href="{{ '/tags' | relative_url }}#{{- tag -}}">{{- tag -}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </article>
+  </li>
+  {% endfor %}
+</ul>
+
+<p id="posts-empty" style="display:none; color:#888;">No posts found.</p>
+
+<script>
+(function () {
+  function filterLang(lang) {
+    document.querySelectorAll('.lang-filter-bar .lang-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    var anyVisible = false;
+    document.querySelectorAll('#posts-list .post-preview').forEach(function (item) {
+      var postLang = item.dataset.lang || '';
+      var show = lang === 'all' || postLang === lang || postLang === '';
+      item.style.display = show ? '' : 'none';
+      if (show) anyVisible = true;
+    });
+    document.getElementById('posts-empty').style.display = anyVisible ? 'none' : '';
+    try { localStorage.setItem('blog-lang', lang); } catch (e) {}
+  }
+
+  window.filterLang = filterLang;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    filterLang(window.getBlogLang ? window.getBlogLang() : 'en');
+  });
+})();
+</script>

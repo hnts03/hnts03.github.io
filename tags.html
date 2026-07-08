@@ -1,11 +1,9 @@
 ---
 layout: page
-title: 'Tag Index'
+title: 'Tags'
 ---
 
 {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
-
-{% include lang-filter.html %}
 
 {%- capture site_tags -%}
     {%- for tag in site.tags -%}
@@ -14,73 +12,104 @@ title: 'Tag Index'
 {%- endcapture -%}
 {%- assign tags_list = site_tags | split:',' | sort -%}
 
+{% include lang-filter.html %}
+
 <div id="tag-buttons">
 {%- for tag in tags_list -%}
-    <a href="#{{- tag -}}" class="btn btn-primary tag-btn"><i class="fas fa-tag" aria-hidden="true"></i>&nbsp;{{- tag -}}&nbsp;(<span class="tag-count">{{site.tags[tag].size}}</span>)</a>
+    <button class="btn btn-outline-secondary tag-btn" data-tag="{{- tag -}}" onclick="selectTag('{{- tag -}}')">
+        <i class="fas fa-tag" aria-hidden="true"></i>&nbsp;{{- tag -}}&nbsp;({{- site.tags[tag].size -}})
+    </button>
 {%- endfor -%}
 </div>
 
-<div id="full-tags-list">
-{%- for tag in tags_list -%}
-    <h2 id="{{- tag -}}" class="linked-section">
-        <i class="fas fa-tag" aria-hidden="true"></i>
-        &nbsp;{{- tag -}}&nbsp;(<span class="tag-count">{{site.tags[tag].size}}</span>)
-    </h2>
-    <div class="post-list">
-        {%- for post in site.tags[tag] -%}
-            <div class="tag-entry" data-lang="{{ post.lang | default: '' }}">
-                <a href="{{ post.url | relative_url }}">{{- post.title | strip_html -}}</a>
-                <div class="entry-date">
-                    <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: date_format -}}</time>
-                </div>
+<div id="tag-results" style="display:none; margin-top:1.5rem;">
+    <h2 id="active-tag-title" style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;"></h2>
+    <div class="post-list" id="tag-post-list">
+        {%- for post in site.posts -%}
+        <div class="tag-entry"
+             data-lang="{{ post.lang | default: '' }}"
+             data-tags="{%- for tag in post.tags -%}{{- tag -}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}"
+             style="display:none;">
+            <a href="{{ post.url | relative_url }}">{{- post.title | strip_html -}}</a>
+            <div class="entry-date">
+                <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: date_format -}}</time>
             </div>
+        </div>
         {%- endfor -%}
     </div>
-{%- endfor -%}
+    <p id="tag-empty" style="display:none; color:#888;">No posts found.</p>
 </div>
+
+<style>
+#tag-buttons {
+  margin-bottom: 0.5rem;
+}
+#tag-buttons .tag-btn {
+  margin: 0.2rem 0.25rem 0.2rem 0;
+  font-size: 0.82rem;
+}
+#tag-buttons .tag-btn.active {
+  background-color: var(--link-col, #008AFF);
+  border-color: var(--link-col, #008AFF);
+  color: #fff;
+}
+</style>
 
 <script>
 (function () {
+  var currentLang = 'all';
+  var currentTag = '';
+
+  function applyFilters() {
+    if (!currentTag) return;
+    var anyVisible = false;
+    document.querySelectorAll('#tag-post-list .tag-entry').forEach(function (entry) {
+      var tags = entry.dataset.tags ? entry.dataset.tags.split(',') : [];
+      var postLang = entry.dataset.lang || '';
+      var tagMatch = tags.indexOf(currentTag) !== -1;
+      var langMatch = currentLang === 'all' || postLang === currentLang || postLang === '';
+      var show = tagMatch && langMatch;
+      entry.style.display = show ? '' : 'none';
+      if (show) anyVisible = true;
+    });
+    document.getElementById('tag-empty').style.display = anyVisible ? 'none' : '';
+  }
+
   function filterLang(lang) {
+    currentLang = lang;
     document.querySelectorAll('.lang-filter-bar .lang-btn').forEach(function (btn) {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
-
-    document.querySelectorAll('.tag-entry').forEach(function (entry) {
-      var postLang = entry.dataset.lang;
-      entry.style.display = (lang === 'all' || postLang === lang || postLang === '') ? '' : 'none';
-    });
-
-    document.querySelectorAll('#full-tags-list h2').forEach(function (heading) {
-      var tagId = heading.id;
-      var postList = heading.nextElementSibling;
-      var visible = 0;
-      postList.querySelectorAll('.tag-entry').forEach(function (e) {
-        if (e.style.display !== 'none') visible++;
-      });
-
-      var hide = visible === 0;
-      heading.style.display = hide ? 'none' : '';
-      postList.style.display = hide ? 'none' : '';
-
-      var headCount = heading.querySelector('.tag-count');
-      if (headCount) headCount.textContent = visible;
-
-      var tagBtn = document.querySelector('#tag-buttons a[href="#' + CSS.escape(tagId) + '"]');
-      if (tagBtn) {
-        tagBtn.style.display = hide ? 'none' : '';
-        var btnCount = tagBtn.querySelector('.tag-count');
-        if (btnCount) btnCount.textContent = visible;
-      }
-    });
-
+    applyFilters();
     try { localStorage.setItem('blog-lang', lang); } catch (e) {}
   }
 
+  function selectTag(tag) {
+    currentTag = tag;
+    document.querySelectorAll('#tag-buttons .tag-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.tag === tag);
+    });
+    var titleEl = document.getElementById('active-tag-title');
+    if (titleEl) {
+      titleEl.innerHTML = '<i class="fas fa-tag" aria-hidden="true"></i>&nbsp;' + tag;
+    }
+    document.getElementById('tag-results').style.display = '';
+    applyFilters();
+  }
+
   window.filterLang = filterLang;
+  window.selectTag = selectTag;
 
   document.addEventListener('DOMContentLoaded', function () {
-    filterLang(window.getBlogLang ? window.getBlogLang() : 'en');
+    var lang = window.getBlogLang ? window.getBlogLang() : 'en';
+    filterLang(lang);
+    var hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash) selectTag(hash);
+  });
+
+  window.addEventListener('hashchange', function () {
+    var hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash) selectTag(hash);
   });
 })();
 </script>
