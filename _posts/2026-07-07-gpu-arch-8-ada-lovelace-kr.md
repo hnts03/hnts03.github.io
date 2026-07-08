@@ -21,7 +21,8 @@ mathjax: false
 | 6 | [Ampere - Sparsity 가속과 MIG](/2026-07-07-gpu-arch-6-ampere-kr/) |
 | 7 | [Hopper - Transformer Engine과 FP8](/2026-07-07-gpu-arch-7-hopper-kr/) |
 | **8** | **Ada Lovelace - 3세대 RT Core와 96MB L2** |
-| 9 | GPU 메모리 시스템과 최적화 |
+| 9 | [Blackwell - FP4 Tensor Core와 멀티다이 설계](/2026-07-08-gpu-arch-9-blackwell-kr/) |
+| 10 | GPU 메모리 시스템과 최적화 |
 
 ---
 
@@ -351,7 +352,7 @@ L40S는 데이터센터 AI 추론 전용 카드로 디스플레이 출력이 없
 
 Ada Lovelace는 컴퓨트 성능을 2배 이상 높이면서 레이트레이싱 품질과 효율을 근본적으로 끌어올린 아키텍처다. 96MB L2 캐시, 3세대 RT Core(OME, DMME, SER), 4세대 TC(FP8)의 조합은 단순 스케일업이 아니라 레이트레이싱 병목 지점을 구조적으로 해소했다.
 
-다음 포스트에서는 GPU 메모리 시스템과 최적화를 다룬다. L1/L2/HBM 계층의 대역폭 특성, 캐시 관리 정책, 최적화 전략을 다룬다.
+다음 포스트에서는 Blackwell을 다룬다. FP4 Tensor Core, MXFP8 미세조정, 2-다이 MCM 아키텍처를 다룬다.
 
 ---
 

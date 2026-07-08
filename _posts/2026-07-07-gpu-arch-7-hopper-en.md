@@ -21,7 +21,8 @@ mathjax: false
 | 6 | [Ampere — Sparsity Acceleration and MIG](/2026-07-07-gpu-arch-6-ampere-en/) |
 | **7** | **Hopper — Transformer Engine and FP8** |
 | 8 | [Ada Lovelace — 3rd-Gen RT Cores and 96MB L2](/2026-07-07-gpu-arch-8-ada-lovelace-en/) |
-| 9 | GPU Memory Systems and Optimization |
+| 9 | [Blackwell — FP4 Tensor Cores and Multi-Die Design](/2026-07-08-gpu-arch-9-blackwell-en/) |
+| 10 | GPU Memory Systems and Optimization |
 
 ---
 

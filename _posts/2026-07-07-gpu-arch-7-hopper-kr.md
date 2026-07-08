@@ -21,7 +21,8 @@ mathjax: false
 | 6 | [Ampere - Sparsity 가속과 MIG](/2026-07-07-gpu-arch-6-ampere-kr/) |
 | **7** | **Hopper - Transformer Engine과 FP8** |
 | 8 | [Ada Lovelace - 3세대 RT Core와 96MB L2](/2026-07-07-gpu-arch-8-ada-lovelace-kr/) |
-| 9 | GPU 메모리 시스템과 최적화 |
+| 9 | [Blackwell - FP4 Tensor Core와 멀티다이 설계](/2026-07-08-gpu-arch-9-blackwell-kr/) |
+| 10 | GPU 메모리 시스템과 최적화 |
 
 ---
 

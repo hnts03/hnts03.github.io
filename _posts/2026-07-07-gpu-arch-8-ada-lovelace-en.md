@@ -21,7 +21,8 @@ mathjax: false
 | 6 | [Ampere — Sparsity Acceleration and MIG](/2026-07-07-gpu-arch-6-ampere-en/) |
 | 7 | [Hopper — Transformer Engine and FP8](/2026-07-07-gpu-arch-7-hopper-en/) |
 | **8** | **Ada Lovelace — 3rd-Gen RT Cores and 96MB L2** |
-| 9 | GPU Memory Systems and Optimization |
+| 9 | [Blackwell — FP4 Tensor Cores and Multi-Die Design](/2026-07-08-gpu-arch-9-blackwell-en/) |
+| 10 | GPU Memory Systems and Optimization |
 
 ---
 
@@ -360,7 +361,7 @@ L40S is a datacenter inference card — no display outputs.
 
 Ada Lovelace more than doubled compute throughput from Ampere while structurally addressing the main ray tracing bottlenecks. The 96MB L2 keeps BVH upper-layer nodes resident across a frame. OME eliminates SM round-trips for transparent geometry. SER recovers warp utilization from divergent material hits. Together these changes compound: the raw RT Core throughput gain understates the real-world rendering improvement.
 
-The next post covers GPU memory systems and optimization — L1/L2/HBM bandwidth characteristics, cache management policy, and practical optimization strategies.
+The next post covers Blackwell — FP4 Tensor Cores, MXFP8 microscaling, and the two-die MCM architecture.
 
 ---
 
