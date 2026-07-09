@@ -14,7 +14,8 @@ mathjax: false
 | # | Topic | Status |
 |:--:|:---|:---:|
 | 1 | Grace — NVIDIA's First Datacenter CPU | ✅ |
-| 2 | (TBD) | 🔲 |
+| 2 | [Vera / Rubin — GTC 2025 Announcement Summary](/2026-07-09-cpu-arch-2-rubin-vera-en/) | ✅ |
+| 3 | (TBD) | 🔲 |
 
 ---
 
@@ -258,4 +259,4 @@ Python packages for ARM64 are distributed via PyPI wheels, so `pip install torch
 
 Grace is not designed to be a general-purpose high-performance CPU. Its goal is to eliminate the PCIe bottleneck and unify CPU and GPU into a single coherent compute domain. Neoverse V2 and LPDDR5X provide capable CPU-side compute and bandwidth; NVLink-C2C is what makes the unification real.
 
-Next: Rubin Architecture — the successor Vera CPU and HBM4 integration (planned)
+Next: [Vera CPU / Rubin GPU — GTC 2025 Announcement Summary](/2026-07-09-cpu-arch-2-rubin-vera-en/)

@@ -14,7 +14,8 @@ mathjax: false
 | # | 주제 | 상태 |
 |:--:|:---|:---:|
 | 1 | Grace - NVIDIA의 첫 데이터센터 CPU | ✅ |
-| 2 | (미정) | 🔲 |
+| 2 | [Vera / Rubin - GTC 2025 공개 내용](/2026-07-09-cpu-arch-2-rubin-vera-kr/) | ✅ |
+| 3 | (미정) | 🔲 |
 
 ---
 
@@ -260,4 +261,4 @@ Python 생태계에서는 ARM 빌드가 PyPI를 통해 배포되므로, `pip ins
 
 Grace의 설계 목표는 범용 고성능 CPU가 아니다. PCIe 병목을 제거하고 CPU-GPU를 단일 연산 도메인으로 통합하는 것이다. Neoverse V2 코어와 LPDDR5X는 그 통합을 뒷받침하는 수단이며, NVLink-C2C가 실제 통합을 실현하는 핵심 기술이다.
 
-다음 글: Rubin 아키텍처 - Grace의 후속 Vera CPU와 HBM4 통합 (예정)
+다음 글: [Vera CPU / Rubin GPU - GTC 2025 공개 내용 정리](/2026-07-09-cpu-arch-2-rubin-vera-kr/)
