@@ -289,3 +289,11 @@ AMD가 2025년 출시 예정으로 발표한 CDNA 4 아키텍처 제품이다. �
 | 특징 | WGP, PCIe 4.0 | IC, DX12U | 칩렛, Dual-Issue | AI 가속, 4nm |
 
 두 계열 모두 칩렛 방향으로 수렴하고 있다. RDNA 3에서 GCD+MCD로, CDNA 2에서 MCM 2-다이로, CDNA 3에서 XCD × 8 + IOD 통합 패키지로 진화했다.
+
+---
+
+## 세대별 심화 포스트
+
+| # | 주제 | 링크 |
+|:--:|:---|:---:|
+| 1 | RDNA 1 - Wave32, WGP, Turing 비교 | [보기](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) |

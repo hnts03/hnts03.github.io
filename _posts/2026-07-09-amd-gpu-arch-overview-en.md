@@ -288,3 +288,11 @@ Die configuration, memory specs, exact TFLOPS, and process node are not yet publ
 | Key feature | WGP, PCIe 4.0 | Infinity Cache, DX12U | Chiplet, Dual-Issue | AI accel, 4nm |
 
 Both lines are converging on chiplet designs: RDNA 3 split compute and memory into GCD+MCD; CDNA 2 used a 2-die MCM; CDNA 3 assembled 8 XCDs, 4 IODs, and 8 HBM3 stacks into a single OAM package. Die-level specialization and heterogeneous integration are AMD's answer to the physical limits of monolithic scaling.
+
+---
+
+## Deep-Dive Series
+
+| # | Topic | Link |
+|:--:|:---|:---:|
+| 1 | RDNA 1 — Wave32, WGP, Turing comparison | [Read](/2026-07-09-amd-gpu-arch-1-rdna1-en/) |
