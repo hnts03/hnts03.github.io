@@ -17,7 +17,7 @@ mathjax: false
 | 1 | [RDNA 1 — Wave32, WGP, 7nm](/2026-07-09-amd-gpu-arch-1-rdna1-en/) | ✅ |
 | 2 | [RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison](/2026-07-13-amd-gpu-arch-2-rdna2-en/) | ✅ |
 | 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison | ✅ |
-| 4 | RDNA 4 — Navi 48, AI acceleration, 4nm | 🔲 |
+| 4 | [RDNA 4 — Monolithic return, 3rd-gen RA, FSR 4, Blackwell comparison](/2026-07-13-amd-gpu-arch-4-rdna4-en/) | ✅ |
 
 ---
 
@@ -239,4 +239,4 @@ With RDNA 3, the RX 7900 XTX entered the officially supported list for some ROCm
 
 RDNA 3 changed GPU manufacturing economics with chiplets, splitting logic from cache/IO by process node to save costly 5nm area. Dual-Issue and WMMA raised compute density. But against Ada's 3rd-gen RT Cores and DLSS 3, the ray tracing and frame-generation gaps remained, and chiplet overhead left it behind on power efficiency.
 
-Next: RDNA 4 — Navi 48, expanded AI acceleration, return to a 4nm monolithic die (upcoming)
+Next: [RDNA 4 — Navi 48, 3rd-gen Ray Accelerator, FSR 4 ML upscaling](/2026-07-13-amd-gpu-arch-4-rdna4-en/)

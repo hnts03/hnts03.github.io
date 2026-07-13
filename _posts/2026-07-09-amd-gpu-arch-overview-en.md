@@ -237,12 +237,13 @@ Same CDNA 3 architecture; HBM3 upgraded to **HBM3e**.
 
 **Launch**: March 2025 | **Process**: TSMC 4nm (N4P) | **Flagship**: RX 9070 XT
 
-RDNA 4 targets the performance tier without a high-end flagship. Navi 48 die powers the RX 9070 XT as the top product.
+RDNA 4 targets the performance tier without a high-end flagship. The Navi 48 die powers the RX 9070 XT as the top product, and the design returns to **monolithic** from RDNA 3's chiplets.
 
 Key features:
-- **4th-gen Ray Accelerators**: 2× ray tracing throughput vs. RDNA 3 (AMD stated)
-- **AI Accelerators**: on-chip acceleration for FSR 4 (ML-based upscaling)
-- DisplayPort 2.1a, improved AV1 encode
+- **3rd-gen Ray Accelerators**: ray-triangle intersection 2.5×, BVH traversal throughput 2× (vs. RDNA 3); dedicated HW for instance transform + stack management
+- **2nd-gen AI Accelerators**: FP8/INT4 support; power FSR 4 (ML-based upscaling) on-chip
+- **FSR 4**: AMD's first ML-based upscaling (requires RDNA 4 AI accelerators)
+- PCIe 5.0, DisplayPort 2.1a
 - Better performance-per-watt vs. RDNA 3
 
 ---
@@ -319,10 +320,10 @@ The key architectural addition in CDNA 4 is **MXFP (Microscaling Floating Point)
 | Launch | 2019 | 2020 | 2022 | 2025 |
 | Process | 7nm | 7nm | GCD 5nm + MCD 6nm | 4nm |
 | Die config | Monolithic | Monolithic | Chiplet (GCD+MCD) | Monolithic |
-| Ray tracing | None | 1st-gen RA | 2nd-gen RA | 4th-gen RA |
-| Infinity Cache | None | 128 MB (Navi 21) | 96 MB (Navi 31) | — |
+| Ray tracing | None | 1st-gen RA | 2nd-gen RA | 3rd-gen RA |
+| Infinity Cache | None | 128 MB (Navi 21) | 96 MB (Navi 31) | 64 MB (Navi 48) |
 | Flagship | RX 5700 XT | RX 6900 XT | RX 7900 XTX | RX 9070 XT |
-| Key feature | WGP, PCIe 4.0 | Infinity Cache, DX12U | Chiplet, Dual-Issue | AI accel, 4nm |
+| Key feature | WGP, PCIe 4.0 | Infinity Cache, DX12U | Chiplet, Dual-Issue | Monolithic return, FSR 4 |
 
 Both lines are converging on chiplet designs: RDNA 3 split compute and memory into GCD+MCD; CDNA 2 used a 2-die MCM; CDNA 3 assembled 8 XCDs, 4 IODs, and 8 HBM3 stacks into a single OAM package. Die-level specialization and heterogeneous integration are AMD's answer to the physical limits of monolithic scaling.
 
@@ -335,3 +336,4 @@ Both lines are converging on chiplet designs: RDNA 3 split compute and memory in
 | 1 | RDNA 1 — Wave32, WGP, Turing comparison | [Read](/2026-07-09-amd-gpu-arch-1-rdna1-en/) |
 | 2 | RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison | [Read](/2026-07-13-amd-gpu-arch-2-rdna2-en/) |
 | 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison | [Read](/2026-07-13-amd-gpu-arch-3-rdna3-en/) |
+| 4 | RDNA 4 — Monolithic return, 3rd-gen RA, FSR 4, Blackwell comparison | [Read](/2026-07-13-amd-gpu-arch-4-rdna4-en/) |

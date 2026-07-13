@@ -17,7 +17,7 @@ mathjax: false
 | 1 | [RDNA 1 - Wave32, WGP, 7nm](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) | ✅ |
 | 2 | [RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 대결](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) | ✅ |
 | 3 | RDNA 3 - 칩렛(GCD+MCD), Dual-Issue, Ada 대결 | ✅ |
-| 4 | RDNA 4 - Navi 48, AI 가속, 4nm | 🔲 |
+| 4 | [RDNA 4 - 모놀리식 복귀, 3세대 RA, FSR 4, Blackwell 대결](/2026-07-13-amd-gpu-arch-4-rdna4-kr/) | ✅ |
 
 ---
 
@@ -239,4 +239,4 @@ RDNA 3에서 RX 7900 XTX가 일부 ROCm 워크로드 공식 지원 대상에 진
 
 RDNA 3는 칩렛으로 GPU 제조 경제학을 바꿨다. 로직과 캐시/IO를 공정별로 분리해 값비싼 5nm 면적을 절약했다. Dual-Issue와 WMMA로 연산 밀도를 높였다. 그러나 Ada의 3세대 RT Core와 DLSS 3 앞에서 레이 트레이싱과 프레임 생성의 격차는 좁혀지지 않았고, 칩렛 오버헤드로 전력 효율에서도 뒤처졌다.
 
-다음 글: RDNA 4 - Navi 48, AI 가속 강화, 4nm 복귀 (예정)
+다음 글: [RDNA 4 - Navi 48, 3세대 Ray Accelerator, FSR 4 ML 업스케일링](/2026-07-13-amd-gpu-arch-4-rdna4-kr/)

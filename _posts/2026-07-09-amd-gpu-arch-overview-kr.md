@@ -240,10 +240,13 @@ CPU와 GPU가 동일 HBM3 풀을 공유하므로 데이터 복사 없이 CPU 계
 
 RDNA 4는 플래그십 없이 성능(퍼포먼스) 티어에 집중한 세대다. Navi 48 다이 기반 RX 9070 XT가 최상위 제품이다.
 
+RDNA 3의 칩렛에서 **모놀리식**으로 복귀했다.
+
 주요 특징:
-- **4세대 Ray Accelerator**: 전 세대 대비 레이 트레이싱 처리량 2배 향상(AMD 공식)
-- **AI Accelerator**: FSR 4(기계 학습 기반 업스케일링)를 온칩 AI 가속기로 처리
-- DisplayPort 2.1a, AV1 인코드 개선
+- **3세대 Ray Accelerator**: Ray-Triangle 교차 2.5배, BVH 순회 처리량 2배(RDNA 3 대비). Instance transform + 스택 관리 전용 HW
+- **2세대 AI Accelerator**: FP8/INT4 지원. FSR 4(기계 학습 기반 업스케일링)를 온칩 AI 가속기로 처리
+- **FSR 4**: AMD 최초 ML 기반 업스케일링 (RDNA 4 AI 가속기 필요)
+- PCIe 5.0, DisplayPort 2.1a
 - RDNA 3 대비 전력 효율 개선
 
 ---
@@ -328,10 +331,10 @@ CDNA 4의 핵심 추가 기능이다. **MXFP(Microscaling Floating Point)** 포�
 | 출시 | 2019 | 2020 | 2022 | 2025 |
 | 공정 | 7nm | 7nm | GCD 5nm + MCD 6nm | 4nm |
 | 다이 구성 | 단일 | 단일 | 칩렛 (GCD+MCD) | 단일 |
-| Ray Tracing | 없음 | 1세대 RA | 2세대 RA | 4세대 RA |
-| Infinity Cache | 없음 | 128MB (Navi 21) | 96MB (Navi 31) | - |
+| Ray Tracing | 없음 | 1세대 RA | 2세대 RA | 3세대 RA |
+| Infinity Cache | 없음 | 128MB (Navi 21) | 96MB (Navi 31) | 64MB (Navi 48) |
 | 플래그십 | RX 5700 XT | RX 6900 XT | RX 7900 XTX | RX 9070 XT |
-| 특징 | WGP, PCIe 4.0 | IC, DX12U | 칩렛, Dual-Issue | AI 가속, 4nm |
+| 특징 | WGP, PCIe 4.0 | IC, DX12U | 칩렛, Dual-Issue | 모놀리식 복귀, FSR 4 |
 
 두 계열 모두 칩렛 방향으로 수렴하고 있다. RDNA 3에서 GCD+MCD로, CDNA 2에서 MCM 2-다이로, CDNA 3에서 XCD × 8 + IOD 통합 패키지로 진화했다.
 
@@ -344,3 +347,4 @@ CDNA 4의 핵심 추가 기능이다. **MXFP(Microscaling Floating Point)** 포�
 | 1 | RDNA 1 - Wave32, WGP, Turing 비교 | [보기](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) |
 | 2 | RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 비교 | [보기](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) |
 | 3 | RDNA 3 - 칩렛(GCD+MCD), Dual-Issue, Ada 비교 | [보기](/2026-07-13-amd-gpu-arch-3-rdna3-kr/) |
+| 4 | RDNA 4 - 모놀리식 복귀, 3세대 RA, FSR 4, Blackwell 비교 | [보기](/2026-07-13-amd-gpu-arch-4-rdna4-kr/) |
