@@ -15,7 +15,8 @@ mathjax: false
 |:--:|:---|:---:|
 | 개요 | [RDNA / CDNA 전 세대 타임라인](/2026-07-09-amd-gpu-arch-overview-kr/) | ✅ |
 | 1 | RDNA 1 - Wave32, WGP, 7nm | ✅ |
-| 2 | (미정) | 🔲 |
+| 2 | [RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 대결](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) | ✅ |
+| 3 | RDNA 3 - 칩렛(GCD+MCD), 듀얼-이슈 셰이더 | 🔲 |
 
 ---
 
@@ -325,4 +326,4 @@ RDNA 1이 해결하지 못한 것:
 
 RDNA 1은 GCN에서 벗어나는 데 성공했다. Wave32와 WGP, 캐시 재설계로 실행 효율을 높이고 클럭 속도를 끌어올렸다. 그러나 Turing이 도입한 레이 트레이싱·AI 가속 유닛 없이 순수 래스터 경쟁을 이어가야 했다. 이 격차는 RDNA 2에서 처음 좁혀졌다.
 
-다음 글: RDNA 2 - Ray Accelerator, Infinity Cache, 그리고 Big Navi (예정)
+다음 글: [RDNA 2 - Ray Accelerator, Infinity Cache, 그리고 Big Navi](/2026-07-13-amd-gpu-arch-2-rdna2-kr/)

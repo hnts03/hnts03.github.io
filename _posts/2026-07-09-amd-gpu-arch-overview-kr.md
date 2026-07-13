@@ -248,14 +248,57 @@ RDNA 4는 플래그십 없이 성능(퍼포먼스) 티어에 집중한 세대다
 
 ---
 
-## CDNA 4 — MI350 (2025 발표)
+## CDNA 4 — MI350 시리즈 (2025)
 
-AMD가 2025년 출시 예정으로 발표한 CDNA 4 아키텍처 제품이다. 확인된 정보:
+CDNA 4 아키텍처 기반 제품이다. White paper가 공개됐으며, MI350X와 MI355X는 출하 중이다.
 
-- FP4 연산 지원 (AI 추론 저정밀도 가속)
-- CDNA 3 대비 AI 추론 성능 향상
+**다이 구성**
 
-세부 사양(클럭, CU 수, 메모리 구성, 정확한 TFLOPS)은 미공개다.
+CDNA 3와 동일한 XCD 칩렛 방식이다. XCD를 5nm에서 **TSMC N3P(3nm)**으로 전환했다.
+
+```
+MI350 시리즈 패키지:
+┌──────────────────────────────────────────────────────────────┐
+│  XCD XCD XCD XCD    HBM3E HBM3E HBM3E HBM3E                │
+│  ─── ─── ─── ───    ───── ───── ───── ─────                 │
+│        IOD  IOD   (CDNA 3의 4 IOD → 2 IOD로 통합)           │
+│        IOD         ← 아님, 2 IOD                            │
+│  ─── ─── ─── ───    ───── ───── ───── ─────                 │
+│  XCD XCD XCD XCD    HBM3E HBM3E HBM3E HBM3E                │
+└──────────────────────────────────────────────────────────────┘
+  8 XCD(N3P) + 2 IOD(N6) | 총 트랜지스터 1,850억
+  CU: 32/XCD × 8 = 256 CU | Matrix Core: 1,024
+```
+
+**새 정밀도 포맷: MXFP**
+
+CDNA 4의 핵심 추가 기능이다. **MXFP(Microscaling Floating Point)** 포맷을 도입했다.
+
+- `MXFP8` / `MXFP6` / `MXFP4`: 블록 단위 스케일 팩터를 공유하는 저정밀도 행렬 포맷
+- AI 추론에서 웨이트·활성화값을 더 작은 비트폭으로 표현, 처리량 극대화
+
+**제품 라인업**
+
+| 제품 | 냉각 | TBP | 클럭 |
+|:---|:---:|:---:|:---:|
+| MI355X | 액체 냉각 | 1,400W | 2,400 MHz |
+| MI350X | 공냉 지원 | 1,000W | 2,200 MHz |
+| MI350P | PCIe 카드 | - | - |
+
+**MI355X 주요 스펙**
+
+| 항목 | 값 |
+|:---|:---|
+| 공정 | TSMC N3P (XCD) + N6 (IOD) |
+| 다이 구성 | 8 XCD + 2 IOD |
+| 트랜지스터 | 1,850억 |
+| CU | 256 (32/XCD × 8) |
+| 메모리 | HBM3E 288GB (8스택 × 36GB) |
+| 메모리 대역폭 | 8 TB/s |
+| FP64 | ~79 TFLOPS |
+| FP16 | ~5 PFLOPS |
+| FP8 / MXFP8 | ~10 PFLOPS |
+| FP4 / MXFP4 | ~20 PFLOPS |
 
 ---
 
@@ -263,16 +306,18 @@ AMD가 2025년 출시 예정으로 발표한 CDNA 4 아키텍처 제품이다. �
 
 ![CDNA 세대별 연산 성능 비교](/assets/img/posts/amd-gpu-arch-overview/cdna-perf.png)
 
-| | CDNA 1 (MI100) | CDNA 2 (MI250X) | CDNA 3 (MI300X) |
-|:---|:---:|:---:|:---:|
-| 공정 | 7nm | N6 (6nm) | XCD 5nm / IOD 6nm |
-| 다이 구성 | 단일 | 2-다이 MCM | 8 XCD + 4 IOD |
-| HBM | HBM2 32GB | HBM2e 128GB | HBM3 192GB |
-| 메모리 대역폭 | 1.23 TB/s | 3.2 TB/s | 5.3 TB/s |
-| FP64 벡터 | 11.5 TFLOPS | 47.9 TFLOPS | ~163 TFLOPS |
-| BF16 Matrix | 184.6 TFLOPS | 383 TFLOPS | 1307 TFLOPS |
-| 주요 혁신 | Matrix Core | MCM, FP64 Matrix | XCD 칩렛, CPU+GPU 통합(MI300A) |
-| 슈퍼컴 채택 | - | Frontier (1st 엑사스케일) | El Capitan (현 Top500 1위) |
+| | CDNA 1 (MI100) | CDNA 2 (MI250X) | CDNA 3 (MI300X) | CDNA 4 (MI355X) |
+|:---|:---:|:---:|:---:|:---:|
+| 공정 | 7nm | N6 (6nm) | XCD 5nm / IOD 6nm | XCD N3P / IOD N6 |
+| 다이 구성 | 단일 | 2-다이 MCM | 8 XCD + 4 IOD | 8 XCD + 2 IOD |
+| HBM | HBM2 32GB | HBM2e 128GB | HBM3 192GB | HBM3E 288GB |
+| 메모리 대역폭 | 1.23 TB/s | 3.2 TB/s | 5.3 TB/s | 8 TB/s |
+| FP64 | 11.5 TFLOPS | 47.9 TFLOPS | ~163 TFLOPS | ~79 TFLOPS |
+| BF16/FP16 | 184.6 TFLOPS | 383 TFLOPS | 1,307 TFLOPS | ~5,000 TFLOPS |
+| FP8 | - | - | ~2,610 TFLOPS | ~10,000 TFLOPS |
+| FP4 / MXFP4 | - | - | - | ~20,000 TFLOPS |
+| 주요 혁신 | Matrix Core | MCM, FP64 Matrix | XCD 칩렛, CPU+GPU 통합 | MXFP 포맷, N3P |
+| 슈퍼컴 채택 | - | Frontier (1st 엑사스케일) | El Capitan (현 Top500 1위) | - |
 
 ---
 
@@ -297,3 +342,4 @@ AMD가 2025년 출시 예정으로 발표한 CDNA 4 아키텍처 제품이다. �
 | # | 주제 | 링크 |
 |:--:|:---|:---:|
 | 1 | RDNA 1 - Wave32, WGP, Turing 비교 | [보기](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) |
+| 2 | RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 비교 | [보기](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) |

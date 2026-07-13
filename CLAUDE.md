@@ -203,3 +203,12 @@ vault/post/
 ## 배포
 
 `master` 브랜치에 push하면 GitHub Actions (`ci.yml`)가 자동으로 빌드·배포.
+
+### 브랜치 규칙 (반드시 준수)
+
+- **작업 브랜치**: `dev-blog`. 모든 커밋과 push는 `dev-blog`에만 한다.
+- **`master` 직접 push 절대 금지.** master는 에이전트가 직접 조작하지 않는다.
+- **브랜치 간 merge 금지**: 사용자의 명시적 허가 없이 임의로 merge하지 않는다.
+- non-fast-forward 오류가 발생해도 임의로 merge하지 않는다. 상황을 설명하고 사용자에게 처리 방법을 묻는다.
+
+> 과거에 master에 직접 push 후 non-fast-forward 해결을 위해 origin/master를 dev-blog에 merge했다가 upstream Beautiful Jekyll 커밋이 섞이고 히스토리가 오염된 이력이 있다.

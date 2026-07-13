@@ -247,14 +247,49 @@ Key features:
 
 ---
 
-## CDNA 4 — MI350 (Announced 2025)
+## CDNA 4 — MI350 Series (2025)
 
-AMD's announced CDNA 4 product. Confirmed details:
+The white paper is public and MI350X / MI355X are shipping. The XCD chiplet approach continues from CDNA 3, with the XCD process node moving from 5nm to **TSMC N3P (3nm)**.
 
-- FP4 compute support (low-precision AI inference acceleration)
-- Higher AI inference throughput than CDNA 3
+```
+MI350 Series Package:
+┌──────────────────────────────────────────────────┐
+│  XCD XCD XCD XCD    HBM3E HBM3E HBM3E HBM3E     │
+│  ─── ─── ─── ───    ───── ───── ───── ─────      │
+│         IOD  IOD    (2 IODs vs 4 in CDNA 3)      │
+│  ─── ─── ─── ───    ───── ───── ───── ─────      │
+│  XCD XCD XCD XCD    HBM3E HBM3E HBM3E HBM3E     │
+└──────────────────────────────────────────────────┘
+  8 XCDs (N3P) + 2 IODs (N6) | 185B transistors
+  CUs: 32/XCD × 8 = 256 | Matrix Cores: 1,024
+```
 
-Die configuration, memory specs, exact TFLOPS, and process node are not yet publicly disclosed.
+### New Precision Formats: MXFP
+
+The key architectural addition in CDNA 4 is **MXFP (Microscaling Floating Point)**: MXFP8, MXFP6, and MXFP4. Each format shares a block-level scale factor across a group of values, achieving lower-precision representation than standard FP without the accuracy collapse that fully-reduced quantization causes. This is AMD's primary mechanism for the inference throughput jump.
+
+### Product Lineup
+
+| Product | Cooling | TBP | Boost clock |
+|:---|:---:|:---:|:---:|
+| MI355X | Liquid | 1,400 W | 2,400 MHz |
+| MI350X | Air-compatible | 1,000 W | 2,200 MHz |
+| MI350P | PCIe card | - | - |
+
+### MI355X Key Specs
+
+| Item | Value |
+|:---|:---|
+| Process | TSMC N3P (XCD) + N6 (IOD) |
+| Die config | 8 XCD + 2 IOD |
+| Transistors | 185B |
+| CUs | 256 (32/XCD × 8) |
+| Memory | HBM3E 288 GB (8 stacks × 36 GB) |
+| Memory bandwidth | 8 TB/s |
+| FP64 | ~79 TFLOPS |
+| FP16 | ~5 PFLOPS |
+| FP8 / MXFP8 | ~10 PFLOPS |
+| FP4 / MXFP4 | ~20 PFLOPS |
 
 ---
 
@@ -262,16 +297,18 @@ Die configuration, memory specs, exact TFLOPS, and process node are not yet publ
 
 ![CDNA Generation Compute Performance Comparison](/assets/img/posts/amd-gpu-arch-overview/cdna-perf.png)
 
-| | CDNA 1 (MI100) | CDNA 2 (MI250X) | CDNA 3 (MI300X) |
-|:---|:---:|:---:|:---:|
-| Process | 7nm | N6 (6nm) | XCD 5nm / IOD 6nm |
-| Die config | Monolithic | 2-die MCM | 8 XCD + 4 IOD |
-| HBM | HBM2 32 GB | HBM2e 128 GB | HBM3 192 GB |
-| Memory BW | 1.23 TB/s | 3.2 TB/s | 5.3 TB/s |
-| FP64 vector | 11.5 TFLOPS | 47.9 TFLOPS | ~163 TFLOPS |
-| BF16 Matrix | 184.6 TFLOPS | 383 TFLOPS | 1307 TFLOPS |
-| Key innovation | Matrix Core | MCM, FP64 Matrix | XCD chiplets, CPU+GPU APU (MI300A) |
-| Supercomputer | — | Frontier (1st exascale) | El Capitan (Top500 #1, 2024) |
+| | CDNA 1 (MI100) | CDNA 2 (MI250X) | CDNA 3 (MI300X) | CDNA 4 (MI355X) |
+|:---|:---:|:---:|:---:|:---:|
+| Process | 7nm | N6 (6nm) | XCD 5nm / IOD 6nm | XCD N3P / IOD N6 |
+| Die config | Monolithic | 2-die MCM | 8 XCD + 4 IOD | 8 XCD + 2 IOD |
+| HBM | HBM2 32 GB | HBM2e 128 GB | HBM3 192 GB | HBM3E 288 GB |
+| Memory BW | 1.23 TB/s | 3.2 TB/s | 5.3 TB/s | 8 TB/s |
+| FP64 | 11.5 TFLOPS | 47.9 TFLOPS | ~163 TFLOPS | ~79 TFLOPS |
+| BF16/FP16 | 184.6 TFLOPS | 383 TFLOPS | 1,307 TFLOPS | ~5,000 TFLOPS |
+| FP8 | - | - | ~2,610 TFLOPS | ~10,000 TFLOPS |
+| FP4 / MXFP4 | - | - | - | ~20,000 TFLOPS |
+| Key innovation | Matrix Core | MCM, FP64 Matrix | XCD chiplets, CPU+GPU APU | MXFP formats, N3P |
+| Supercomputer | - | Frontier (1st exascale) | El Capitan (Top500 #1, 2024) | - |
 
 ---
 
@@ -296,3 +333,4 @@ Both lines are converging on chiplet designs: RDNA 3 split compute and memory in
 | # | Topic | Link |
 |:--:|:---|:---:|
 | 1 | RDNA 1 — Wave32, WGP, Turing comparison | [Read](/2026-07-09-amd-gpu-arch-1-rdna1-en/) |
+| 2 | RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison | [Read](/2026-07-13-amd-gpu-arch-2-rdna2-en/) |

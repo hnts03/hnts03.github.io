@@ -15,7 +15,8 @@ mathjax: false
 |:--:|:---|:---:|
 | Overview | [RDNA / CDNA Full Timeline](/2026-07-09-amd-gpu-arch-overview-en/) | ✅ |
 | 1 | RDNA 1 — Wave32, WGP, 7nm | ✅ |
-| 2 | (TBD) | 🔲 |
+| 2 | [RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison](/2026-07-13-amd-gpu-arch-2-rdna2-en/) | ✅ |
+| 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue shaders | 🔲 |
 
 ---
 
@@ -322,4 +323,4 @@ AMD **ROCm**: During the RDNA 1 era, ROCm support for RDNA-class hardware was li
 
 RDNA 1 successfully broke from GCN. Wave32, WGP, and cache redesign improved execution efficiency and enabled higher clocks. But Turing's RT Cores, Tensor Cores, and INT32 co-issue established a feature gap that rasterization efficiency alone couldn't close. Closing that gap was left to RDNA 2.
 
-Next: RDNA 2 — Ray Accelerator, Infinity Cache, and Big Navi (planned)
+Next: [RDNA 2 — Ray Accelerator, Infinity Cache, and Big Navi](/2026-07-13-amd-gpu-arch-2-rdna2-en/)
