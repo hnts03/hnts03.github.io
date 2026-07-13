@@ -16,7 +16,8 @@ mathjax: false
 | Overview | [RDNA / CDNA Full Timeline](/2026-07-09-amd-gpu-arch-overview-en/) | ✅ |
 | 1 | [RDNA 1 — Wave32, WGP, 7nm](/2026-07-09-amd-gpu-arch-1-rdna1-en/) | ✅ |
 | 2 | RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison | ✅ |
-| 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue shaders | 🔲 |
+| 3 | [RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison](/2026-07-13-amd-gpu-arch-3-rdna3-en/) | ✅ |
+| 4 | RDNA 4 — Navi 48, AI acceleration, 4nm | 🔲 |
 
 ---
 
@@ -310,4 +311,4 @@ ROCm progressed through version 4.x during the RDNA 2 period, but the primary co
 
 RDNA 2 closed the RT gap that RDNA 1 left open. Infinity Cache was an inventive workaround for GDDR6's bandwidth ceiling, and Big Navi gave AMD a presence in the high-end market for the first time. Against Ampere's 2nd-gen RT Core and DLSS 2.0, the gap in ray tracing and AI-driven upscaling remained wider than one generation could close.
 
-Next: RDNA 3 — chiplet die split (GCD+MCD), dual-issue shaders, 5nm transition (upcoming)
+Next: [RDNA 3 — chiplet die split (GCD+MCD), dual-issue shaders, 5nm transition](/2026-07-13-amd-gpu-arch-3-rdna3-en/)

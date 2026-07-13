@@ -334,3 +334,4 @@ Both lines are converging on chiplet designs: RDNA 3 split compute and memory in
 |:--:|:---|:---:|
 | 1 | RDNA 1 — Wave32, WGP, Turing comparison | [Read](/2026-07-09-amd-gpu-arch-1-rdna1-en/) |
 | 2 | RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison | [Read](/2026-07-13-amd-gpu-arch-2-rdna2-en/) |
+| 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison | [Read](/2026-07-13-amd-gpu-arch-3-rdna3-en/) |

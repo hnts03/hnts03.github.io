@@ -16,7 +16,8 @@ mathjax: false
 | 개요 | [RDNA / CDNA 전 세대 타임라인](/2026-07-09-amd-gpu-arch-overview-kr/) | ✅ |
 | 1 | [RDNA 1 - Wave32, WGP, 7nm](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) | ✅ |
 | 2 | RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 대결 | ✅ |
-| 3 | RDNA 3 - 칩렛(GCD+MCD), 듀얼-이슈 셰이더 | 🔲 |
+| 3 | [RDNA 3 - 칩렛(GCD+MCD), Dual-Issue, Ada 대결](/2026-07-13-amd-gpu-arch-3-rdna3-kr/) | ✅ |
+| 4 | RDNA 4 - Navi 48, AI 가속, 4nm | 🔲 |
 
 ---
 
@@ -314,4 +315,4 @@ RDNA 2 시기 ROCm은 4.x 버전으로 진행됐으나, 컴퓨트 워크로드�
 
 RDNA 2는 RDNA 1이 남긴 RT 공백을 채웠다. Infinity Cache는 GDDR6의 한계를 우회하는 독창적인 해법이었고, Big Navi로 고성능 시장에도 진입했다. 그러나 Ampere의 2세대 RT Core와 DLSS 2.0 앞에서 RT와 AI 업스케일링의 격차는 한 세대로 좁혀지지 않았다.
 
-다음 글: RDNA 3 - 칩렛(GCD+MCD), 듀얼-이슈 셰이더, 5nm 전환 (예정)
+다음 글: [RDNA 3 - 칩렛(GCD+MCD), Dual-Issue 셰이더, 5nm 전환](/2026-07-13-amd-gpu-arch-3-rdna3-kr/)

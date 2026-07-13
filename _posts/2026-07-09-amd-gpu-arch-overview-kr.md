@@ -343,3 +343,4 @@ CDNA 4의 핵심 추가 기능이다. **MXFP(Microscaling Floating Point)** 포�
 |:--:|:---|:---:|
 | 1 | RDNA 1 - Wave32, WGP, Turing 비교 | [보기](/2026-07-09-amd-gpu-arch-1-rdna1-kr/) |
 | 2 | RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 비교 | [보기](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) |
+| 3 | RDNA 3 - 칩렛(GCD+MCD), Dual-Issue, Ada 비교 | [보기](/2026-07-13-amd-gpu-arch-3-rdna3-kr/) |
