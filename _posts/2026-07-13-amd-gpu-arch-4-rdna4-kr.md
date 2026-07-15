@@ -18,6 +18,7 @@ mathjax: false
 | 2 | [RDNA 2 - Ray Accelerator, Infinity Cache, Ampere 대결](/2026-07-13-amd-gpu-arch-2-rdna2-kr/) | ✅ |
 | 3 | [RDNA 3 - 칩렛(GCD+MCD), Dual-Issue, Ada 대결](/2026-07-13-amd-gpu-arch-3-rdna3-kr/) | ✅ |
 | 4 | RDNA 4 - 모놀리식 복귀, 3세대 RA, FSR 4, Blackwell 대결 | ✅ |
+| 5 | [CDNA 1 - GCN 계승, Matrix Core, A100 대결](/2026-07-15-amd-gpu-arch-5-cdna1-kr/) | ✅ |
 
 ---
 
@@ -216,4 +217,6 @@ RDNA 4는 소비자 카드로서 ROCm 컴퓨트 지원이 이어진다. 2세대 
 
 RDNA 4는 최상위 경쟁을 포기하는 대신 RDNA 3의 두 약점을 정면으로 공략했다. 3세대 Ray Accelerator로 RT 붕괴를 완화하고, FSR 4로 AMD 최초의 ML 업스케일링을 실현했다. 모놀리식 복귀는 퍼포먼스 티어에 최적화된 선택이었다. 절대 성능에서 Blackwell 최상위를 넘지는 못했으나, 가성비 티어에서 명확한 경쟁력을 확보했다.
 
-이것으로 RDNA 1부터 4까지 소비자 GPU 계보를 마친다. 다음은 데이터센터 CDNA 계열의 심화로 이어진다. (예정)
+이것으로 RDNA 1부터 4까지 소비자 GPU 계보를 마친다. 다음은 데이터센터 CDNA 계열의 심화로 이어진다.
+
+다음 글: [CDNA 1 - GCN 컴퓨트 계승, Matrix Core, A100 대결](/2026-07-15-amd-gpu-arch-5-cdna1-kr/)

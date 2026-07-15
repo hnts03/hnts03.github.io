@@ -337,3 +337,4 @@ Both lines are converging on chiplet designs: RDNA 3 split compute and memory in
 | 2 | RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison | [Read](/2026-07-13-amd-gpu-arch-2-rdna2-en/) |
 | 3 | RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison | [Read](/2026-07-13-amd-gpu-arch-3-rdna3-en/) |
 | 4 | RDNA 4 — Monolithic return, 3rd-gen RA, FSR 4, Blackwell comparison | [Read](/2026-07-13-amd-gpu-arch-4-rdna4-en/) |
+| 5 | CDNA 1 — GCN inheritance, Matrix Core, A100 comparison | [Read](/2026-07-15-amd-gpu-arch-5-cdna1-en/) |

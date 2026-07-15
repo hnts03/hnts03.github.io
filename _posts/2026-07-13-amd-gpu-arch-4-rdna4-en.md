@@ -18,6 +18,7 @@ mathjax: false
 | 2 | [RDNA 2 — Ray Accelerator, Infinity Cache, Ampere comparison](/2026-07-13-amd-gpu-arch-2-rdna2-en/) | ✅ |
 | 3 | [RDNA 3 — Chiplet (GCD+MCD), Dual-Issue, Ada comparison](/2026-07-13-amd-gpu-arch-3-rdna3-en/) | ✅ |
 | 4 | RDNA 4 — Return to monolithic, 3rd-gen RA, FSR 4, Blackwell comparison | ✅ |
+| 5 | [CDNA 1 — GCN inheritance, Matrix Core, A100 comparison](/2026-07-15-amd-gpu-arch-5-cdna1-en/) | ✅ |
 
 ---
 
@@ -216,4 +217,6 @@ RDNA 4 continues ROCm compute support as a consumer card. The 2nd-gen AI Acceler
 
 RDNA 4 gave up the top-end race and instead attacked RDNA 3's two weaknesses directly. The 3rd-gen Ray Accelerator eased the RT collapse, and FSR 4 delivered AMD's first ML upscaling. The return to monolithic was the right choice optimized for the performance tier. It did not surpass Blackwell's top end in absolute performance, but it secured clear competitiveness in the value tier.
 
-This concludes the consumer RDNA 1 through 4 lineage. The series continues with deep-dives into the datacenter CDNA line. (upcoming)
+This concludes the consumer RDNA 1 through 4 lineage. The series continues with deep-dives into the datacenter CDNA line.
+
+Next: [CDNA 1 — inheriting GCN's compute lineage, Matrix Core, A100 comparison](/2026-07-15-amd-gpu-arch-5-cdna1-en/)
