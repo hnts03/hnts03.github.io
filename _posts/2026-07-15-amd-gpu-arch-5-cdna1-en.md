@@ -19,7 +19,8 @@ mathjax: true
 | 3 | [RDNA 3 — Chiplet, Dual-Issue](/2026-07-13-amd-gpu-arch-3-rdna3-en/) | ✅ |
 | 4 | [RDNA 4 — Monolithic return, FSR 4](/2026-07-13-amd-gpu-arch-4-rdna4-en/) | ✅ |
 | 5 | CDNA 1 — GCN inheritance, Matrix Core, A100 comparison | ✅ |
-| 6 | CDNA 2 — MCM, FP64 Matrix, Frontier | 🔲 |
+| 6 | [CDNA 2 — MCM, FP64 Matrix, Frontier](/2026-07-15-amd-gpu-arch-6-cdna2-en/) | ✅ |
+| 7 | CDNA 3 — XCD chiplets, MI300A APU, El Capitan | 🔲 |
 
 ---
 
@@ -237,4 +238,4 @@ ROCm in the CDNA 1 era was functionally in place but far behind CUDA in ecosyste
 
 CDNA 1 was AMD's starting point for re-entering datacenter compute. It inherited GCN's Wave64 compute foundation and removed graphics hardware to focus the die on compute. Matrix Core took the first step into matrix acceleration. It beat the A100 on FP64/FP32 vector but trailed on AI tensor performance and software ecosystem. Closing that gap becomes the mission of the generations that follow.
 
-Next: CDNA 2 — MCM 2-die, FP64 Matrix Core, and the world's first exascale system, Frontier (upcoming)
+Next: [CDNA 2 — MCM 2-die, FP64 Matrix Core, and the world's first exascale system, Frontier](/2026-07-15-amd-gpu-arch-6-cdna2-en/)

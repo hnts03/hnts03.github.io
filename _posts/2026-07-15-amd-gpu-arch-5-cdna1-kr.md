@@ -19,7 +19,8 @@ mathjax: true
 | 3 | [RDNA 3 - 칩렛, Dual-Issue](/2026-07-13-amd-gpu-arch-3-rdna3-kr/) | ✅ |
 | 4 | [RDNA 4 - 모놀리식 복귀, FSR 4](/2026-07-13-amd-gpu-arch-4-rdna4-kr/) | ✅ |
 | 5 | CDNA 1 - GCN 계승, Matrix Core, A100 대결 | ✅ |
-| 6 | CDNA 2 - MCM, FP64 Matrix, Frontier | 🔲 |
+| 6 | [CDNA 2 - MCM, FP64 Matrix, Frontier](/2026-07-15-amd-gpu-arch-6-cdna2-kr/) | ✅ |
+| 7 | CDNA 3 - XCD 칩렛, MI300A APU, El Capitan | 🔲 |
 
 ---
 
@@ -237,4 +238,4 @@ CDNA 1 시기의 ROCm은 기능적으로는 갖춰졌으나 생태계 성숙도�
 
 CDNA 1은 AMD가 데이터센터 컴퓨트로 복귀하는 출발점이었다. GCN의 Wave64 컴퓨트 기반을 계승하고, 그래픽 하드웨어를 제거해 다이를 컴퓨트에 집중시켰다. Matrix Core로 행렬 가속의 첫발을 뗐다. FP64/FP32 벡터에서 A100을 앞섰으나, AI 텐서 성능과 소프트웨어 생태계에서는 뒤처졌다. 이 격차를 좁히는 과정이 다음 세대들의 과제가 된다.
 
-다음 글: CDNA 2 - MCM 2-die, FP64 Matrix Core, 그리고 세계 최초 엑사스케일 Frontier (예정)
+다음 글: [CDNA 2 - MCM 2-die, FP64 Matrix Core, 그리고 세계 최초 엑사스케일 Frontier](/2026-07-15-amd-gpu-arch-6-cdna2-kr/)
