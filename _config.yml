@@ -311,6 +311,8 @@ exclude:
   - screenshot.png
   - docs/
   - scripts/
+  - prepost/
+  - draft/
 
 plugins:
   - jekyll-paginate

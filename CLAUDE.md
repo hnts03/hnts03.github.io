@@ -50,7 +50,22 @@ mathjax: true     # 수식 포함 시
 
 - `lang` + `translation-url` 쌍이 있어야 포스트 상단에 언어 전환 버튼이 표시된다 (`_includes/lang-switch.html`).
 - permalink 형식: `/:year-:month-:day-:title/` — URL에 슬러그가 그대로 쓰인다.
-- 초안은 `_drafts/`에 작성. 빌드 시 `--future` 플래그 없이는 미래 날짜 포스트가 제외된다.
+- 빌드 시 `--future` 플래그 없이는 미래 날짜 포스트가 제외된다.
+
+### 발행 워크플로우 (반드시 준수)
+
+포스트는 `_posts/`에 바로 쓰지 않는다. 두 단계 대기 영역을 거친다.
+
+```
+draft/          →  prepost/            →  _posts/
+(유저가 초안 작성)   (에이전트가 완성, 리뷰 대기)   (유저 OK 후 이동 = 발행)
+```
+
+- **`draft/`**: 유저가 직접 초안 소스를 작성하는 공간. `draft/template.md`가 표준 템플릿. Jekyll 빌드에서 제외됨(`exclude`).
+- **`prepost/`**: 에이전트가 완성한 포스트(한/영 쌍)를 두는 발행 대기 영역. Jekyll 빌드에서 제외되어 블로그 UI로 접근 불가(GitHub 소스는 열람 가능). 자세한 규칙은 `prepost/README.md`.
+- **에이전트는 완성 포스트를 `prepost/`에 쓴다. `_posts/`에 직접 쓰지 않는다.**
+- **유저가 `prepost/`를 리뷰하고 OK 판정하면**, 해당 포스트를 `_posts/`로 이동해 발행한다. 이때 이미지(`assets/img/posts/<slug>/`)와 vault 문서도 함께 처리한다.
+- `prepost/`, `draft/`는 `_config.yml`의 `exclude`에 등록되어 배포 사이트에 빌드되지 않는다.
 
 ### 콘텐츠 스타일
 
@@ -174,7 +189,8 @@ uv run scripts/gen-diagram.py --post gpu-arch-1 --name sm-structure --type block
 ```
 _config.yml          # 사이트 전역 설정 (네비바, 색상, 플러그인 등)
 _posts/              # 발행된 포스트 (한/영 쌍)
-_drafts/             # 미발행 초안
+draft/               # 유저 초안 작성 공간 (빌드 제외). template.md 표준 템플릿
+prepost/             # 에이전트 완성 포스트, 발행 대기 (빌드 제외, UI 접근 불가)
 _layouts/            # base → default/post/page/home/minimal 상속 구조
 _includes/           # 재사용 컴포넌트
   lang-switch.html   # 한/영 전환 버튼 (front matter의 lang + translation-url로 동작)
