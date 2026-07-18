@@ -17,7 +17,7 @@ mathjax: false
 | 4 | [RDNA 4 — Monolithic return, FSR 4](/2026-07-13-amd-gpu-arch-4-rdna4-en/) | ✅ |
 | 5 | [CDNA 1 — GCN inheritance, Matrix Core, A100 comparison](/2026-07-15-amd-gpu-arch-5-cdna1-en/) | ✅ |
 | 6 | CDNA 2 — MCM 2-die, FP64 Matrix, Frontier | ✅ |
-| 7 | CDNA 3 — XCD chiplets, MI300A APU, El Capitan | 🔲 |
+| 7 | [CDNA 3 — 3D stacking, unified GPU, MI300A APU, El Capitan](/2026-07-16-amd-gpu-arch-7-cdna3-en/) | ✅ |
 
 ---
 
@@ -213,4 +213,4 @@ CUDA's ecosystem still led. However, Frontier's deployment began validating ROCm
 
 CDNA 2 lifted AMD to the top of HPC. It surpassed the die limit with MCM, completed double-precision performance with the FP64 Matrix Core, and achieved the world's first exascale with Frontier. But the split-MCM design, where two GCDs appear as separate GPUs, left programming complexity behind. Merging those dies into one logical GPU — and putting the CPU in the same package — becomes the next generation's challenge.
 
-Next: CDNA 3 — XCD chiplets, a CPU+GPU integrated APU (MI300A), and El Capitan (upcoming)
+Next: [CDNA 3 — XCD chiplets, a CPU+GPU integrated APU (MI300A), and El Capitan](/2026-07-16-amd-gpu-arch-7-cdna3-en/)

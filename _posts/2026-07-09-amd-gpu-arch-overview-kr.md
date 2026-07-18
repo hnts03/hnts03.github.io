@@ -350,3 +350,4 @@ CDNA 4의 핵심 추가 기능이다. **MXFP(Microscaling Floating Point)** 포�
 | 4 | RDNA 4 - 모놀리식 복귀, 3세대 RA, FSR 4, Blackwell 비교 | [보기](/2026-07-13-amd-gpu-arch-4-rdna4-kr/) |
 | 5 | CDNA 1 - GCN 계승, Matrix Core, A100 비교 | [보기](/2026-07-15-amd-gpu-arch-5-cdna1-kr/) |
 | 6 | CDNA 2 - MCM 2-die, FP64 Matrix, Frontier | [보기](/2026-07-15-amd-gpu-arch-6-cdna2-kr/) |
+| 7 | CDNA 3 - 3D 적층, 통합 GPU, MI300A APU, El Capitan | [보기](/2026-07-16-amd-gpu-arch-7-cdna3-kr/) |

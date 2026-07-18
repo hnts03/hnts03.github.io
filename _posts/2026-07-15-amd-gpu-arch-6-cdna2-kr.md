@@ -17,7 +17,7 @@ mathjax: false
 | 4 | [RDNA 4 - 모놀리식 복귀, FSR 4](/2026-07-13-amd-gpu-arch-4-rdna4-kr/) | ✅ |
 | 5 | [CDNA 1 - GCN 계승, Matrix Core, A100 대결](/2026-07-15-amd-gpu-arch-5-cdna1-kr/) | ✅ |
 | 6 | CDNA 2 - MCM 2-die, FP64 Matrix, Frontier | ✅ |
-| 7 | CDNA 3 - XCD 칩렛, MI300A APU, El Capitan | 🔲 |
+| 7 | [CDNA 3 - 3D 적층, 통합 GPU, MI300A APU, El Capitan](/2026-07-16-amd-gpu-arch-7-cdna3-kr/) | ✅ |
 
 ---
 
@@ -213,4 +213,4 @@ A100이 유리하다. A100은 단일 논리적 GPU로 프로그래밍이 단순�
 
 CDNA 2는 AMD를 HPC 최정상으로 끌어올렸다. MCM으로 다이 한계를 넘고, FP64 Matrix Core로 배정밀도 성능을 완성했으며, Frontier로 세계 최초 엑사스케일을 달성했다. 그러나 2개 GCD가 별도 GPU로 보이는 분리형 MCM은 프로그래밍 복잡성을 남겼다. 이 다이들을 하나의 논리적 GPU로 통합하고 CPU까지 한 패키지에 넣는 것이 다음 세대의 도전이 된다.
 
-다음 글: CDNA 3 - XCD 칩렛, CPU+GPU 통합 APU(MI300A), 그리고 El Capitan (예정)
+다음 글: [CDNA 3 - XCD 칩렛, CPU+GPU 통합 APU(MI300A), 그리고 El Capitan](/2026-07-16-amd-gpu-arch-7-cdna3-kr/)
