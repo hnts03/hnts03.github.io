@@ -54,17 +54,17 @@ mathjax: true     # 수식 포함 시
 
 ### 발행 워크플로우 (반드시 준수)
 
-포스트는 `_posts/`에 바로 쓰지 않는다. 두 단계 대기 영역을 거친다.
+포스트는 `_posts/`에 바로 쓰지 않는다. `prepost/`를 거쳐 리뷰 후 발행한다. `prepost/`로 들어오는 경로는 둘이다.
 
 ```
-draft/          →  prepost/            →  _posts/
-(유저가 초안 작성)   (에이전트가 완성, 리뷰 대기)   (유저 OK 후 이동 = 발행)
+[유저 경로]   draft/ ──(에이전트가 이어받아 다듬음)──┐
+                                                    ├──→  prepost/ ──(유저 OK)──→  _posts/
+[에이전트 경로]  (곧바로 prepost/부터 작성) ──────────┘        리뷰 대기            발행
 ```
 
-- **`draft/`**: 유저가 직접 초안 소스를 작성하는 공간. `draft/template.md`가 표준 템플릿. Jekyll 빌드에서 제외됨(`exclude`).
-- **`prepost/`**: 에이전트가 완성한 포스트(한/영 쌍)를 두는 발행 대기 영역. Jekyll 빌드에서 제외되어 블로그 UI로 접근 불가(GitHub 소스는 열람 가능). 자세한 규칙은 `prepost/README.md`.
-- **에이전트는 완성 포스트를 `prepost/`에 쓴다. `_posts/`에 직접 쓰지 않는다.**
-- **유저가 `prepost/`를 리뷰하고 OK 판정하면**, 해당 포스트를 `_posts/`로 이동해 발행한다. 이때 이미지(`assets/img/posts/<slug>/`)와 vault 문서도 함께 처리한다.
+- **`draft/`**: 유저가 직접 초안 소스를 쓸 때만 사용하는 파이프. `draft/template.md`가 표준 템플릿. 에이전트는 여기서 시작하지 않고, 유저 초안을 이어받을 때 참조한다.
+- **`prepost/`**: 발행 대기 영역. **에이전트가 새 포스트를 쓸 때는 `draft/`를 거치지 않고 곧바로 `prepost/`부터 작성한다.** `_posts/`에 직접 쓰지 않는다. Jekyll 빌드에서 제외되어 블로그 UI로 접근 불가(GitHub 소스는 열람 가능). 자세한 규칙은 `prepost/README.md`.
+- **유저가 `prepost/`를 리뷰하고 OK 판정하면**, 해당 포스트(한/영 쌍)를 `_posts/`로 이동해 발행한다. 이때 이미지(`assets/img/posts/<slug>/`)와 vault 문서도 함께 처리한다.
 - `prepost/`, `draft/`는 `_config.yml`의 `exclude`에 등록되어 배포 사이트에 빌드되지 않는다.
 
 ### 콘텐츠 스타일
