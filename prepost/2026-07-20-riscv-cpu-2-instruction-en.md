@@ -163,7 +163,7 @@ The base integer ISA's U-type instructions are exactly these two, `lui` and `aui
 jal x1, FUNC   →  x1 = PC + 4 (return address), PC += offset
 ```
 
-The base integer ISA's only J-type instruction is `jal`. The `jalr` used to return from a function specifies its destination via a register (register + fixed offset), so it is I-type, not J. In other words, a jump splits by how the target is given: as an immediate it is J (`jal`), via a register it is I (`jalr`). `jal`'s 20-bit immediate jumps a `±1MB` range.
+The base integer ISA's only J-type instruction is `jal`. The `jalr` used to return from a function specifies its destination via a register (register + fixed offset), so it is I-type, not J. In other words, a jump splits by how the target is given: as an immediate it is J (`jal`), via a register it is I (`jalr`). Jump offsets, like branches, are in 2-byte units (the lowest bit is always 0), so `jal`'s 20-bit immediate jumps a `±1MB` range.
 
 ---
 
