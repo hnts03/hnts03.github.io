@@ -85,63 +85,75 @@ This is deliberate. Because `rs1` and `rs2` are always at bits 19:15 and 24:20, 
 Computes from two source registers into a destination register. No immediate.
 
 ```
-add x5, x6, x7   →  x5 = x6 + x7
+add x5, x6, x7   →  x5 = x6 + x7   (funct7 0000000, funct3 000)
+sub x5, x6, x7   →  x5 = x6 - x7   (funct7 0100000, funct3 000)
+and x5, x6, x7   →  x5 = x6 & x7   (funct7 0000000, funct3 111)
 
+Bit example (add):
 funct7   rs2   rs1   funct3   rd    opcode
 0000000  00111 00110 000      00101 0110011
    |      x7    x6    ADD      x5    OP
-sub changes only funct7 to 0100000.
 ```
+
+`add` and `sub` differ by `funct7`; `add` and `and` differ by `funct3`. All three share the opcode.
 
 ### I-type: Immediate Operations and Loads
 
 Computes from one source register and a 12-bit immediate. Loads are also I-format (address = base register + offset).
 
 ```
-addi x5, x6, 10   →  x5 = x6 + 10
-lw   x5, 8(x6)    →  x5 = memory[x6 + 8]
+addi x5, x6, 10   →  x5 = x6 + 10            (immediate op)
+lw   x5, 8(x6)    →  x5 = memory[x6 + 8]      (load)
+jalr x1, x6, 0    →  x1 = PC+4, PC = x6 + 0   (jump via register)
 
+Bit example (addi):
 imm[11:0]     rs1   funct3   rd    opcode
-000000001010  00110 000      00101 0010011   (addi)
+000000001010  00110 000      00101 0010011
 ```
 
-The 12-bit immediate is signed, ranging `-2048 ~ +2047`.
+The three do different things — immediate arithmetic, a memory load, a register jump — yet all are I-format, because they share the same structure of one source register and a 12-bit immediate. The 12-bit immediate is signed, ranging `-2048 ~ +2047`.
 
 ### S-type: Stores
 
 Writes a register value to memory. Since the destination is a memory address, not a register, there is no `rd`. Instead the immediate (offset) is split into two pieces.
 
 ```
-sw x7, 8(x6)   →  memory[x6 + 8] = x7
+sw x7, 8(x6)   →  memory[x6 + 8] = all 4 bytes of x7   (funct3 010)
+sh x7, 8(x6)   →  memory[x6 + 8] = low 2 bytes of x7   (funct3 001)
+sb x7, 8(x6)   →  memory[x6 + 8] = low 1 byte of x7    (funct3 000)
 
+Bit example (sw):
 imm[11:5]  rs2   rs1   funct3   imm[4:0]  opcode
 0000000    00111 00110 010      01000     0100011
 ```
 
-The lower 5 bits of the immediate go into the `rd` slot (bits 11:7). Even split this way, `rs1` and `rs2` keep their positions.
+The three distinguish the store width via `funct3` (word/halfword/byte). The lower 5 bits of the immediate go into the `rd` slot (bits 11:7). Even split this way, `rs1` and `rs2` keep their positions.
 
 ### B-type: Conditional Branches
 
 Compares two registers and, if the condition holds, moves the PC relatively. Similar to S, but the immediate encodes a branch offset.
 
 ```
-beq x6, x7, LABEL   →  if x6 == x7, PC += offset
+beq x6, x7, LABEL   →  branch if x6 == x7   (funct3 000)
+bne x6, x7, LABEL   →  branch if x6 != x7   (funct3 001)
+blt x6, x7, LABEL   →  branch if x6 <  x7   (funct3 100, signed compare)
 
+Bit fields:
 imm[12|10:5]  rs2   rs1   funct3   imm[4:1|11]  opcode
 ```
 
-Branch offsets are in 2-byte units (the lowest bit is always 0), so 12 bits express a `±4KB` range. The reason the bit order is scrambled is explained below.
+The three distinguish the compare condition via `funct3` (equal/not-equal/less-than). Branch offsets are in 2-byte units (the lowest bit is always 0), so 12 bits express a `±4KB` range. The reason the bit order is scrambled is explained below.
 
 ### U-type: Upper 20-bit Immediate
 
 Places a 20-bit immediate in the upper 20 bits of the result. Used for large constants or addresses.
 
 ```
-lui   x5, 0x12345   →  x5 = 0x12345000  (upper 20 bits)
-auipc x5, 0x12345   →  x5 = PC + (0x12345 << 12)
+lui   x5, 0x12345   →  x5 = 0x12345000            (constant in upper bits)
+auipc x5, 0x12345   →  x5 = PC + (0x12345 << 12)   (PC-relative address)
 ```
 
-Combining `lui` and `addi` builds an arbitrary 32-bit constant in two instructions.
+The base integer ISA's U-type instructions are exactly these two, `lui` and `auipc`. Unlike other types, there are only two examples because the U-format exists solely for these two uses (absolute upper-bit constant, PC-relative upper-bit address). Combining `lui` and `addi` builds an arbitrary 32-bit constant in two instructions.
 
 ### J-type: Unconditional Jumps
 
@@ -151,7 +163,7 @@ Combining `lui` and `addi` builds an arbitrary 32-bit constant in two instructio
 jal x1, FUNC   →  x1 = PC + 4 (return address), PC += offset
 ```
 
-The 20-bit immediate jumps a `±1MB` range.
+The base integer ISA's only J-type instruction is `jal`. The `jalr` used to return from a function specifies its destination via a register (register + fixed offset), so it is I-type, not J. In other words, a jump splits by how the target is given: as an immediate it is J (`jal`), via a register it is I (`jalr`). `jal`'s 20-bit immediate jumps a `±1MB` range.
 
 ---
 
@@ -197,6 +209,17 @@ To summarize, the CPU's decoder takes a 32-bit instruction and performs the foll
 ```
 
 All of these extractions happen simultaneously thanks to fixed bit positions. The regularity of instruction formats is decoding speed itself — the reason the pipeline in the next part can stream one instruction through every clock.
+
+---
+
+## References
+
+The full instruction list and exact encoding of the base integer ISA (RV32I) can be found here.
+
+- **Official specification**: [The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA](https://riscv.org/technical/specifications/) — the RV32I base integer chapter defines the bit encoding of every instruction.
+- **ISA reference card (one page)**: [jameslzhu/riscv-card](https://github.com/jameslzhu/riscv-card) — a one-page card summarizing the six formats and base instructions. The format figure in this post follows the same structure.
+
+The RV32I base set comprises about 40 instructions. The examples in this post are just the representatives of each format.
 
 ---
 
