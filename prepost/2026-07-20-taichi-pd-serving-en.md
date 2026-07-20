@@ -155,9 +155,9 @@ The cost TaiChi adds is small. KV cache transfer is 0.20% of total request time,
 
 The limitations the paper states are as follows.
 
-- **Single-node evaluation**: validated only on a single node with 8 A100 GPUs. Multi-node performance is unexplored.
-- **Offline configuration search**: optimal slider values must be found offline, reconfigured only on significant workload shifts. Not real-time adaptation.
-- **Reactive scheduling**: output length is not known in advance, so requests are migrated reactively rather than predictively.
+- **Single-node evaluation**: validated only on a single node with 8 A100 GPUs. Multi-node performance is unexplored — meaning inter-node KV-transfer factors are not accounted for.
+- **Offline configuration search**: optimal slider values must be found offline, reconfigured only on significant workload shifts. Not real-time adaptation. Auto-tuning these heuristics could be a direction for new research.
+- **Reactive scheduling**: output length is not known in advance, so requests are migrated reactively rather than predictively. A paper called WindServe takes a similar approach.
 - **Prediction-accuracy dependence**: scheduling accuracy depends on execution-time prediction (tens of microseconds).
 
 ---
@@ -168,7 +168,7 @@ TaiChi's contribution is reframing the "aggregation vs. disaggregation" dichotom
 
 The striking part is the unified lens of latency shifting. Flowing decode and length-aware prefill look like different techniques on the surface, but both apply one principle — "move resources from slack-rich requests to at-risk ones" — to decode and prefill respectively. Parameterizing the system with three sliders that include aggregation and disaggregation as extremes is a clean design.
 
-The limitations are also clear. Single-node validation and offline slider search do not transfer directly to the dynamic workloads of large clusters. Scaling to multiple nodes and online adaptation remain future work. Still, the perspective of turning the PD debate into a problem of unification is worth referencing in future serving-system design.
+The limitations are clear. Single-node validation and offline slider search do not transfer directly to the dynamic workloads of large clusters. Scaling to multiple nodes and online adaptation remain future work. Still, in my view, the perspective of turning the PD debate into a problem of unification is worth referencing in future serving-system design.
 
 ---
 
