@@ -64,7 +64,7 @@ This arrangement takes the best of both: linear attention's low cost and full at
 
 ## Results
 
-The paper validates with a Kimi Linear model of 3B activated / 48B total parameters, pretrained on 1.4T tokens.
+The paper validates with a Kimi Linear model of 3B activated / 48B total parameters.
 
 - **KV cache**: up to 75% reduction versus full MLA
 - **Decode throughput**: up to 6× at 1M context
